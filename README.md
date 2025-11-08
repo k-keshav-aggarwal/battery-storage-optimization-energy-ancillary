@@ -47,7 +47,7 @@ Running our script we see that "Total profit: $102,349.83" with the following pl
 ![Image2](https://github.com/romilan24/battery-storage-optimization-energy-ancillary/blob/main/img/as.png)
 
 ## Battery State of Charge (SOC) which is the variation in battery level as we Buy & Sell
-![Image3](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/batter_soc.png)
+![Image3](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/battery_soc.png)
 
 ## Buy and Sell decisions for each Product
 ![Image4](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/Buy_Sell_per_Product.png)
