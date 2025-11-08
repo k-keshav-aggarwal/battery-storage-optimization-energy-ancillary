@@ -52,5 +52,9 @@ Running our script we see that "Total profit: $102,349.83" with the following pl
 ## Buy and Sell decisions for each Product
 ![Image4](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/Buy_Sell_per_Product.png)
 
+## Net Energy Flow
+![Image5](https://github.com/romilandc/battery-storage-optimization-energy-ancillary/blob/main/img/net_energy_flow.png)
+
+
 ## Hourly and Cumulative Profit
 ![Image5](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/hourly_Cum_Profit.png)
