@@ -82,22 +82,36 @@ def get_merged_data(start_date, end_date, nodes):
 
 
 def inject_price_spike(df, col="SP15", t=3, magnitude=50.0):
-    out = df.copy()
-    if t < 0 or t >= len(out):
-        raise IndexError(f"Spike index {t} out of range for dataframe length {len(out)}")
-    out.loc[t, col] = float(out.loc[t, col]) + float(magnitude)
-    return out
+    df = df.copy()
+    if t < 0 or t >= len(df):
+        raise IndexError(f"Spike index t={t} out of range for dataframe length {len(df)}")
+    df.loc[t, col] = df.loc[t, col] + magnitude
+    return df
 
 
 def zscore_filter(series, threshold=2.0):
     s = series.copy()
     mean = s.mean()
     std = s.std(ddof=0)
+
     if std == 0 or pd.isna(std):
         return s
+
     z = (s - mean) / std
     s.loc[z.abs() > threshold] = mean
     return s
+
+
+def iqr_filter(series):
+    s = series.copy()
+    q1 = s.quantile(0.25)
+    q3 = s.quantile(0.75)
+    iqr = q3 - q1
+
+    lower = q1 - 1.5 * iqr
+    upper = q3 + 1.5 * iqr
+
+    return s.clip(lower=lower, upper=upper)
 
 
 def median_filter(series, window=5):
@@ -106,26 +120,16 @@ def median_filter(series, window=5):
     return med.fillna(s)
 
 
-def iqr_filter(series):
-    s = series.copy()
-    q1 = s.quantile(0.25)
-    q3 = s.quantile(0.75)
-    iqr = q3 - q1
-    lower = q1 - 1.5 * iqr
-    upper = q3 + 1.5 * iqr
-    return s.clip(lower=lower, upper=upper)
-
-
 base_df = get_merged_data(start_date, end_date, nodes)
 
 merged_df_clean = base_df.copy()
-merged_df_attack = inject_price_spike(merged_df_clean, col="SP15", t=3, magnitude=50.0)
+merged_df_spike = inject_price_spike(merged_df_clean, col="SP15", t=3, magnitude=50.0)
 
-merged_df_zscore = merged_df_attack.copy()
-merged_df_zscore["SP15"] = zscore_filter(merged_df_zscore["SP15"], threshold=2.0)
+merged_df_iqr = merged_df_spike.copy()
+merged_df_iqr["SP15"] = iqr_filter(merged_df_iqr["SP15"])
 
-merged_df_median = merged_df_attack.copy()
+merged_df_median = merged_df_spike.copy()
 merged_df_median["SP15"] = median_filter(merged_df_median["SP15"], window=5)
 
-merged_df_iqr = merged_df_attack.copy()
-merged_df_iqr["SP15"] = iqr_filter(merged_df_iqr["SP15"])
+merged_df_zscore = merged_df_spike.copy()
+merged_df_zscore["SP15"] = zscore_filter(merged_df_zscore["SP15"], threshold=2.0)
