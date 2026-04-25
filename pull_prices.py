@@ -6,8 +6,6 @@ import urllib3
 import hashlib
 from params import nodes, start_date, end_date, RANDOM_SEED
 
-np.random.seed(RANDOM_SEED)
-
 urllib3.disable_warnings()
 
 iso = gridstatus.CAISO()
@@ -24,7 +22,9 @@ CACHE_AS  = "cache_as.pkl"
 def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
 
     node_hash = hashlib.md5("".join(nodes).encode()).hexdigest()[:6]
-    cache_key = f"cache_lmp_{start}_{end}_{node_hash}.pkl"
+    start_iso = pd.Timestamp(start).strftime("%Y%m%d")
+    end_iso = pd.Timestamp(end).strftime("%Y%m%d")
+    cache_key = f"cache_lmp_{start_iso}_{end_iso}_{node_hash}.pkl"
 
     if pd.io.common.file_exists(cache_key):
         print(f"[LMP] Loading from cache: {cache_key}")
@@ -32,7 +32,7 @@ def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
 
     chunks = pd.date_range(start, end, freq=f"{chunk_days}D")
     if chunks[-1] < pd.Timestamp(end):
-        chunks = chunks.append(pd.DatetimeIndex([end]))
+        chunks = chunks.union(pd.DatetimeIndex([pd.Timestamp(end)]))
 
     frames = []
 
@@ -84,7 +84,9 @@ def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
 # =========================
 def get_as_prices_data(start_date, end_date, chunk_days=15, sleep=12, retries=3):
 
-    cache_key = f"cache_as_{start_date}_{end_date}.pkl"
+    start_iso = pd.Timestamp(start_date).strftime("%Y%m%d")
+    end_iso = pd.Timestamp(end_date).strftime("%Y%m%d")
+    cache_key = f"cache_as_{start_iso}_{end_iso}.pkl"
 
     if pd.io.common.file_exists(cache_key):
         print(f"[AS] Loading from cache: {cache_key}")
@@ -92,7 +94,7 @@ def get_as_prices_data(start_date, end_date, chunk_days=15, sleep=12, retries=3)
 
     chunks = pd.date_range(start_date, end_date, freq=f"{chunk_days}D")
     if chunks[-1] < pd.Timestamp(end_date):
-        chunks = chunks.append(pd.DatetimeIndex([end_date]))
+        chunks = chunks.union(pd.DatetimeIndex([pd.Timestamp(end_date)]))
 
     frames = []
 
@@ -130,12 +132,18 @@ def get_as_prices_data(start_date, end_date, chunk_days=15, sleep=12, retries=3)
     as_prices = as_prices[["datetime"] + numeric_cols]
     as_prices = as_prices.groupby("datetime").sum().reset_index()
 
-    as_prices.rename(columns={
+    rename_map = {
         "Non-Spinning Reserves": "NonSpin",
         "Regulation Down":       "RegDown",
         "Regulation Up":         "RegUp",
         "Spinning Reserves":     "Spin",
-    }, inplace=True)
+    }
+
+    missing = set(rename_map) - set(as_prices.columns)
+    if missing:
+        raise KeyError(f"AS price columns missing from API: {missing}")
+
+    as_prices.rename(columns=rename_map, inplace=True)
 
     as_prices.to_pickle(cache_key)
     print(f"[AS] Cached to {cache_key}")
@@ -170,14 +178,10 @@ def get_merged_data():
     return df
 
 
-# =========================
-# 🔹 SPIKE INJECTION
-# =========================
-def inject_price_spike(df, magnitude=50, duration=6):
+def inject_price_spike(df, magnitude=50, duration=6, seed=RANDOM_SEED):
     df = df.copy()
-    if len(df) == 0:
-        return df
-    idx = np.random.randint(0, len(df) - duration)
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, max(1, len(df) - duration))
     df.iloc[idx:idx + duration, df.columns.get_loc("SP15")] += magnitude
     return df
 

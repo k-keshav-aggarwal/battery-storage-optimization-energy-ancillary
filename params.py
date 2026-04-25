@@ -20,11 +20,13 @@ battery_capacity_mwh = 10.0
 max_charge_power_mw = 10.0
 max_discharge_power_mw = 10.0
 
+# Backward-compatible aliases used by the notebook.
 mcp = battery_capacity_mwh
 mdp = max_discharge_power_mw
 
 # ---- Efficiency & Costs ----
-efficiency = 0.80
+round_trip_efficiency = 0.80
+efficiency = round_trip_efficiency
 e = efficiency
 
 transaction_fee = 1.0
