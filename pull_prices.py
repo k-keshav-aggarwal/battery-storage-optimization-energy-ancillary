@@ -3,7 +3,7 @@ import gridstatus
 import pandas as pd
 import numpy as np
 import urllib3
-from params import nodes, start_date, end_date, RANDOM_SEE
+from params import nodes, start_date, end_date, RANDOM_SEED
 
 np.random.seed(RANDOM_SEED)
 
@@ -35,28 +35,28 @@ def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
     frames = []
 
     for i in range(len(chunks) - 1):
-        s, e = chunks[i], chunks[i + 1]
+        s, e_chunk = chunks[i], chunks[i + 1]
         success = False
 
         for attempt in range(1, retries + 1):
             try:
                 df = iso.get_lmp(
-                    start=s, end=e,
+                    start=s, end=e_chunk,
                     market="DAY_AHEAD_HOURLY",
                     locations=nodes,
                     sleep=sleep,
                 )
                 frames.append(df)
-                print(f"[LMP] ✓ {s.date()} → {e.date()}")
+                print(f"[LMP] ✓ {s.date()} → {e_chunk.date()}")
                 success = True
                 break
 
             except Exception as ex:
-                print(f"[LMP] attempt {attempt}/{retries} failed ({s.date()}→{e.date()}): {ex}")
-                time.sleep(sleep * attempt)  # backoff
+                print(f"[LMP] attempt {attempt}/{retries} failed ({s.date()}→{e_chunk.date()}): {ex}")
+                time.sleep(sleep * attempt)
 
         if not success:
-            print(f"[LMP] ✗ Skipping chunk {s.date()} → {e.date()} after {retries} retries")
+            print(f"[LMP] ✗ Skipping chunk {s.date()} → {e_chunk.date()} after {retries} retries")
 
         time.sleep(sleep)
 
@@ -95,23 +95,23 @@ def get_as_prices_data(start_date, end_date, chunk_days=15, sleep=12, retries=3)
     frames = []
 
     for i in range(len(chunks) - 1):
-        s, e = chunks[i], chunks[i + 1]
+        s, e_chunk = chunks[i], chunks[i + 1]
         success = False
 
         for attempt in range(1, retries + 1):
             try:
-                df = iso.get_as_prices(date=s, end=e)
+                df = iso.get_as_prices(date=s, end=e_chunk)
                 frames.append(df)
-                print(f"[AS] ✓ {s.date()} → {e.date()}")
+                print(f"[AS] ✓ {s.date()} → {e_chunk.date()}")
                 success = True
                 break
 
             except Exception as ex:
-                print(f"[AS] attempt {attempt}/{retries} failed ({s.date()}→{e.date()}): {ex}")
+                print(f"[AS] attempt {attempt}/{retries} failed ({s.date()}→{e_chunk.date()}): {ex}")
                 time.sleep(sleep * attempt)
 
         if not success:
-            print(f"[AS] ✗ Skipping chunk {s.date()} → {e.date()} after {retries} retries")
+            print(f"[AS] ✗ Skipping chunk {s.date()} → {e_chunk.date()} after {retries} retries")
 
         time.sleep(sleep)
 
