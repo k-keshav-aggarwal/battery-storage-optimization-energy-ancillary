@@ -1,3 +1,9 @@
+"""Fetch, cache, and combine market price data for the notebook.
+
+The helpers below load LMP and ancillary-service data, align them on a common
+timestamp, and create a reproducible spike scenario for the attack dataset.
+"""
+
 import time
 import gridstatus
 import pandas as pd
@@ -16,10 +22,13 @@ CACHE_LMP = "cache_lmp.pkl"
 CACHE_AS  = "cache_as.pkl"
 
 
-# =========================
-# 🔹 LMP DATA (chunked + retry + cache)
-# =========================
+# LMP data: chunked fetch with retry and cache.
 def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
+    """Fetch day-ahead LMP data for the selected nodes.
+
+    The request is split into chunks so a long time range can be retried in
+    smaller pieces and cached locally for repeat runs.
+    """
 
     node_hash = hashlib.md5("".join(nodes).encode()).hexdigest()[:6]
     start_iso = pd.Timestamp(start).strftime("%Y%m%d")
@@ -79,10 +88,13 @@ def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
     return lmp
 
 
-# =========================
-# 🔹 AS PRICES (retry + cache)
-# =========================
+# AS prices: chunked fetch with retry and cache.
 def get_as_prices_data(start_date, end_date, chunk_days=15, sleep=12, retries=3):
+    """Fetch ancillary-service prices and standardise the column names.
+
+    The returned table is grouped by timestamp so it can be merged with the LMP
+    data on the notebook's shared datetime column.
+    """
 
     start_iso = pd.Timestamp(start_date).strftime("%Y%m%d")
     end_iso = pd.Timestamp(end_date).strftime("%Y%m%d")
@@ -151,10 +163,9 @@ def get_as_prices_data(start_date, end_date, chunk_days=15, sleep=12, retries=3)
     return as_prices
 
 
-# =========================
-# 🔹 MERGE
-# =========================
+# Merge the LMP and AS datasets on timestamp.
 def get_merged_data():
+    """Load both price datasets and join them into one analysis table."""
     lmp      = get_lmp_data(start_date, end_date, nodes)
     as_prices = get_as_prices_data(start_date, end_date)
 
@@ -179,6 +190,7 @@ def get_merged_data():
 
 
 def inject_price_spike(df, magnitude=50, duration=6, seed=RANDOM_SEED):
+    """Create the attack scenario by adding a deterministic price spike."""
     df = df.copy()
     rng = np.random.default_rng(seed)
     idx = rng.integers(0, max(1, len(df) - duration))

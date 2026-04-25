@@ -1,3 +1,9 @@
+"""Shared configuration values for the battery dispatch notebook.
+
+The notebook imports these constants so the market setup, battery limits,
+efficiency assumptions, and random seed stay in one place.
+"""
+
 # =========================
 # SYSTEM PARAMETERS CONFIG
 # =========================
@@ -20,7 +26,7 @@ battery_capacity_mwh = 10.0
 max_charge_power_mw = 10.0
 max_discharge_power_mw = 10.0
 
-# Backward-compatible aliases used by the notebook.
+# Notebook-compatible aliases.
 mcp = battery_capacity_mwh
 mdp = max_discharge_power_mw
 
@@ -32,7 +38,7 @@ e = efficiency
 transaction_fee = 1.0
 fee = transaction_fee
 
-# [IMPROVEMENT]: Added degradation cost per MWh of throughput
+# Throughput-based degradation cost per MWh.
 degradation_cost = 2.5 
 
 RANDOM_SEED = 42
