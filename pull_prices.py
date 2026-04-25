@@ -3,6 +3,7 @@ import gridstatus
 import pandas as pd
 import numpy as np
 import urllib3
+import hashlib
 from params import nodes, start_date, end_date, RANDOM_SEED
 
 np.random.seed(RANDOM_SEED)
@@ -22,7 +23,8 @@ CACHE_AS  = "cache_as.pkl"
 # =========================
 def get_lmp_data(start, end, nodes, chunk_days=15, sleep=12, retries=3):
 
-    cache_key = f"cache_lmp_{start}_{end}.pkl"
+    node_hash = hashlib.md5("".join(nodes).encode()).hexdigest()[:6]
+    cache_key = f"cache_lmp_{start}_{end}_{node_hash}.pkl"
 
     if pd.io.common.file_exists(cache_key):
         print(f"[LMP] Loading from cache: {cache_key}")
