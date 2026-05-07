@@ -1,7 +1,7 @@
 scenario,profit
-clean_base,366142.684827
-clean_penalised,356072.3759295589
-clean_opportunistic,369740.8774337351
-attack_base,366260.277515
-attack_penalised,356372.7296590704
-attack_opportunistic,370045.0415783954
+clean_base,366326.924407
+clean_penalised,357573.7964501361
+clean_opportunistic,369480.54403270653
+attack_base,366557.953202
+attack_penalised,357812.13529264164
+attack_opportunistic,369723.3968150375
