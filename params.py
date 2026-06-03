@@ -35,7 +35,7 @@ round_trip_efficiency = 0.80
 efficiency = round_trip_efficiency
 e = efficiency
 
-transaction_fee = 1.0
+transaction_fee = 0.5
 fee = transaction_fee
 
 # Throughput-based degradation cost per MWh.

@@ -1,0 +1,7 @@
+Scenario,Mode,Profit ($K),EFC,Profit/Cycle ($/MWh)
+Clean,Baseline,365.56,1049.35,348.37
+Clean,Penalised,353.95,1049.15,337.37
+Clean,Opportunistic,368.96,1050.55,351.2
+Attack,Baseline,366.7,1053.55,348.07
+Attack,Penalised,355.34,1052.95,337.47
+Attack,Opportunistic,370.08,1055.35,350.67
