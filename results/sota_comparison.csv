@@ -1,4 +1,4 @@
 Detector,Clean Opp ($K),Attack Opp ($K),Attack improvement (%)
-Threshold (z-score),532.1,540.3,9.87
-IsoForest only,517.9,524.7,6.7
-VAE ensemble (ours),504.7,511.3,3.98
+Threshold (z-score),538.3,538.6,10.94
+IsoForest only,523.1,523.4,7.81
+VAE ensemble (ours),507.0,507.4,4.51
