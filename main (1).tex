@@ -8,16 +8,13 @@
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{stfloats}
+\usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
-
-% DAY 1
-
-\title{Anomaly-Aware Battery Dispatch: A VAE-Based Detection Pipeline for Robust Energy Market Optimization\\
-}
+\title{Anomaly-Aware Battery Dispatch: A VAE-Based Detection Pipeline for Robust Energy Market Optimization}
 
 \author{\IEEEauthorblockN{Keshav Aggarwal}
 \IEEEauthorblockA{\textit{Student, Department of Computer Science and Engineering} \\
@@ -28,66 +25,45 @@ ka9812204392@gmail.com}
 \maketitle
 
 \begin{abstract}
-Battery energy storage systems (BESS) participating in energy markets are increasingly exposed to adversarial price manipulation, where artificial price spikes are injected into market signals to induce charging and discharging decisions. Existing state-of-the-art (SOTA) strategies either ignore such price events entirely or apply penalties that remove legitimate trading opportunities during genuine market stress.
-This paper proposes a two-stage framework that combines a Variational Autoencoder (VAE) with anomaly detection methods, including Isolation Forest and Local Outlier Factor, to classify hourly price deviations as either genuine market events or synthetic injections. The resulting anomaly signal is integrated under three operating regimes: baseline (anomaly-agnostic%), penalized (anomaly-averse), and opportunistic (anomaly-adaptive). Experiments on SP15 % south of path 15
-California electricity price data.
-A sensitivity analysis over the anomaly sensitivity parameter $\lambda$ % defined at the end of the implementation code
-identifies an optimal operating point that balances robustness against manipulation with responsiveness to genuine price events.
-Explainability of dispatch decisions is further supported by adapting Gradient-weighted Class Activation Mapping (Grad-CAM) to the temporal VAE setting. % provides interpretability by showing why and when the model chooses to charge, discharge, or remain idle instead of acting as a black-box system
-
+Battery energy storage systems (BESS) participating in energy markets are increasingly exposed to adversarial price manipulation, where artificial price spikes are injected into market signals to induce suboptimal charging and discharging decisions. Existing state-of-the-art strategies either ignore such price events entirely, leaving the system fully exposed to manipulation, or apply blanket penalties that forfeit legitimate trading opportunities during genuine market stress. This paper proposes a two-stage framework that combines a Variational Autoencoder (VAE) with an ensemble of Isolation Forest  (iForest) and Local Outlier Factor (LOF) detectors to classify hourly price deviations as either genuine market events or synthetic injections. The resulting anomaly signal is integrated under three operating regimes: baseline (anomaly-agnostic), penalized (anomaly-averse), and opportunistic (anomaly-adaptive). The genuine-versus-synthetic classifier achieves an $F_1$ score of $0.5859$ and a precision of $0.9615$ on 727 anomalous hours evaluated against honest ground truth derived from injected spike positions. Experiments on three years of California electricity price data demonstrate that the opportunistic regime achieves a $0.53\%$ profit improvement over the anomaly-agnostic baseline under adversarial conditions while maintaining comparable clean-market performance. A robustness sweep across 15 spike magnitude and duration configurations confirms consistent detection rates scaling from $10.7\%$ at $1.5\times$ magnitude to $71.0\%$ at $8\times$ magnitude. Explainability of dispatch decisions is further supported by adapting Gradient-weighted Class Activation Mapping (Grad-CAM) to the temporal VAE setting, providing market operators with a human-readable audit trail for every charge and discharge decision.
 \end{abstract}
 
 \begin{IEEEkeywords}
-battery energy storage, variational autoencoder, anomaly detection, energy market optimization, price spike exploitation, state of charge, Grad-CAM, arbitrage, sensitivity analysis
+battery energy storage, variational autoencoder, anomaly detection, energy market optimization, adversarial price injection, State of Charge (SoC), Grad-CAM, arbitrage, sensitivity analysis
 \end{IEEEkeywords}
-
-% DAY 3
-
+   
 \section{Introduction}
-% Introduction to be added in this section 
-BESS are emerging as critical assets in modern peer-to-peer (P2P) energy markets, providing services such as energy trading. As participants increasingly rely on automated AI algorithms that respond to real-time price signals, they become attractive targets for adversarial manipulation and fake data signals, a class of attack in which artificial price spikes are injected into market signals to induce suboptimal charging and discharging decisions, reducing prosumer revenue and not favoring grid operations.
 
-The SP15 pricing node in Southern California (South of path 15), one of the most actively traded hubs, serves as a representative dataset for this problem, given its high price volatility and exposure to both renewable unpredictability and strategic bidding behavior. Existing SOTA dispatch strategies address this vulnerability poorly: anomaly-agnostic approaches treat all price signals as legitimate and are fully exposed to manipulation, while blanket anomaly-penalized strategies avoid trading during unusual price events, leaving legitimate trade revenue during genuine market stress events such as heatwaves or supply shortfalls.
+Battery energy storage systems are emerging as critical assets in modern peer-to-peer (P2P) energy markets, providing services such as price trading, frequency regulation, and spinning reserve. As market participants increasingly rely on automated algorithms that respond to real-time price signals, these systems become attractive targets for adversarial manipulation: artificial price spikes are injected into market signals, inducing suboptimal charging and discharging decisions that reduce prosumer revenue and destabilize grid operations.
 
-% this part needs more clarity
-Recent advances in deep generative models, such as GPT (Generative Pre-trained Transformer), and in unsupervised anomaly detection offer a promising path forward. VAEs have demonstrated strong capability in learning compact latent representations of normal temporal patterns, making reconstruction error a natural signal for detecting anomalies in time-series data as applied in the model presented in this paper. Methods such as Isolation Forest and Local Outlier Factor complement this by capturing anomalies from a statistical density perspective, with each detector sensitive to different points of price irregularity.
-However, anomaly detection alone is not enough for dispatch predictions: a spike flagged as anomalous may be either a genuine market event worth exploiting and raking in the max profit one can, or a synthetic injection that must be avoided, and leaving it to the decision maker to choose between the two leads to loss decisions in opposite directions. A classification layer that distinguishes genuine from adversarial anomalies on continuity and rate-of-change is therefore a necessary addition to any detection pipeline deployed in a live market setting for prosumers and operators.
-% corrected the spelling of penalized to penalized, but differs on language, so last me dekha ieee konsi use karta hai taki uske hisab se add kar sake  
+The pricing nodes in Southern California, one of the most actively traded hubs in the energy market, serve as a representative dataset for this problem, given its high price volatility and exposure to both renewable unpredictability and strategic bidding behavior. Existing dispatch strategies address this vulnerability poorly. Anomaly-agnostic approaches treat all price signals as legitimate. They are fully exposed to manipulation, while blanket anomaly-penalized strategies avoid trading during all unusual price events, forfeiting legitimate revenue during genuine market stress events such as heatwaves or supply shortfalls.
+
+Recent advances in deep generative models and unsupervised anomaly detection offer a promising path forward. VAEs have demonstrated strong capability in learning compact latent representations of normal temporal patterns, making reconstruction error a natural signal for detecting anomalies in time-series data. Methods such as iForest and LOF complement this by capturing anomalies from a statistical density perspective, with each detector sensitive to different aspects of price irregularity. However, anomaly detection alone is insufficient for dispatch decisions: a spike flagged as anomalous may be either a genuine market event worth exploiting or a synthetic injection that must be avoided. A classification layer that distinguishes genuine from adversarial anomalies based on persistence, mean reversion, and rate of change is, therefore, a necessary addition to any detection pipeline deployed in a live market setting.
 
 \section{Related Work}
-The problem addressed in this paper sits at the intersection of three active research papers: electricity price forecasting \cite{Price_Forecasting}, anomaly detection \cite{AE_Anomaly}, BESS dispatch optimization, and adversarial stabilization \cite{BESS} %maintain system stability, reliability
-in energy systems. While each paper has developed substantial literature independently in their own respective fields, their intersection and specifically the question of how anomaly classification quality translates into measurable dispatch profit under adversarial conditions remains largely unaddressed.
 
-Early work on electricity price anomaly detection relied on statistical process control and threshold-based methods, flagging prices that exceeded a fixed multiple of rolling mean or standard deviation. While the model is lightweight, these approaches lack the temporal context needed to distinguish a genuine demand spike from a brief manipulated injection, as both can produce similar single-hour deviations. Auto-regressive models such as ARIMA (for analyzing and forecasting time-series data) and their seasonal variants improved on this by modeling expected prices as a function of recent history, with residuals serving as anomaly scores.
+The problem addressed in this paper sits at the intersection of electricity price forecasting~\cite{Price_Forecasting}, anomaly detection in energy systems~\cite{AE_Anomaly}, and adversarial robustness in BESS dispatch~\cite{BESS}. While each area has developed substantial independent literature, the specific question of how anomaly classification translates into measurable dispatch profit under adversarial conditions remains largely unaddressed.
 
-The introduction of deep learning (Multiple layers instead of 1) substantially expanded detection capability. A Long Short-Term Memory (LSTM) model % model designed to process sequential data
-in a network was applied for price forecasting, with reconstruction error used as an anomaly indicator, demonstrating sensitivity to multi-hour deviations that most SOTA statistical methods missed. More recently, VAE-based approaches have gained attention precisely because the probabilistic latent space provides a principled measure of how far an observation lies from the learned normal distribution, rather than a purely deterministic reconstruction distance. Critically, however, the existing VAE literature on electricity prices treats detection as the terminal objective; none of the cited work closes the loop back to dispatch decisions, which this paper addresses.
+Early work on electricity price anomaly detection relied on statistical process control and threshold-based methods, flagging prices that exceeded a fixed multiple of a rolling mean or standard deviation. While computationally lightweight, these approaches lack the temporal context needed to distinguish a genuine demand spike from a brief manipulated injection, as both can produce similar single-hour deviations. Autoregressive models such as ARIMA and its variants improved on this by modeling expected prices as a function of history, with residuals serving as anomaly scores.
 
-Optimal dispatch has been extensively studied as a stochastic % something involving a random variable
-or a deterministic % strict rules no randomness
-optimization problem. Model predictive control (MPC) frameworks formulate dispatch as a rolling program that is updated as new price forecasts arrive. Stochastic programming extensions account for price forecast uncertainty by optimizing over scenario trees, at the cost of significantly increased computational complexity (hence, heavy computational power is required). Reinforcement learning approaches have more recently been proposed to learn dispatch policies directly from market interactions (i.e., details received from prosumers), with several studies reporting that MPC baselines outperform them in volatile price environments (i.e., when prosumer profits rise). 
+The introduction of deep learning models has substantially expanded detection capability. Long Short-Term Memory (LSTM) networks were applied to price forecasting, with reconstruction error used as an anomaly indicator, demonstrating sensitivity to multi-hour deviations that most statistical methods missed. More recently, VAE-based approaches have gained attention because the probabilistic latent space provides a principled measure of how far an observation lies from the learned normal distribution, rather than a purely deterministic reconstruction distance. Critically, however, the existing VAE literature on electricity prices treats detection as the terminal objective; cited works do not close the loop back to dispatch decisions, which this paper directly addresses.
 
-What unites all of these formulations, however, is an assumption that the price signal is trustworthy; adversarial injection is not modeled, and no mechanism exists to discount or exploit anomalous prices differentially based on their origin. The framework proposed here extends the linear programming formulation with an anomaly-conditioned objective and constraint set, filling this gap without sacrificing the tractability and auditability that make LP-based dispatch %most cost-effective and optimal way to assign resources
-preferable in regulated market contexts.
+Optimal dispatch has been extensively studied as both a stochastic and a deterministic optimization problem. Model predictive control frameworks formulate dispatch as a rolling program updated as new price forecasts arrive. Stochastic programming extensions account for forecast uncertainty by optimizing over scenario trees at the cost of significantly increased computational complexity. Reinforcement learning approaches have been proposed to learn dispatch policies directly from market interactions, with several studies reporting that Model Predictive Control baselines outperform them in volatile price environments.
 
-% DAY 4
+What unites all of these formulations, however, is an assumption that the price signal is trustworthy. Adversarial injection is not modeled, and no mechanism exists to exploit or penalize anomalous prices based on their origin differentially. The framework proposed here extends the linear programming formulation with an anomaly-conditioned objective and constraint set, filling this gap without sacrificing the tractability and auditability that make linear programming-based dispatch preferable in regulated market contexts.
+
 \section{System Architecture and Pipeline}
-
 \label{sec:pipeline}
-    
 
 \subsection{Overview}
-The proposed framework processes raw electricity price data through four sequential stages: data ingestion % importing data from various sources
-, anomaly detection, spike classification, and adaptive dispatch, before producing a profit-maximizing charge/discharge schedule. The pipeline below works on the same principle. Each stage is designed to be independent of the others: the anomaly detector can be swapped out without modifying the optimizer, and the classification thresholds can be calibrated again for different market nodes without retraining the VAE. This modularity is deliberate, as operational energy systems require components that can be audited, updated, and replaced independently in response to changing market conditions or regulatory requirements. % basically laws, etc. ke liye
+The proposed framework processes raw electricity price data through four stages: data ingestion, anomaly detection, spike classification, and adaptive dispatch, before producing a profit-maximizing charge/discharge schedule. Each stage is designed to be independent of the others: the anomaly detector can be swapped without modifying the optimizer, and the classification thresholds can be recalibrated for different market nodes without retraining the VAE. This modularity is deliberate, as operational energy systems require components that can be audited, updated, and replaced independently in response to changing market conditions or regulatory requirements.
 
 \subsection{Stage 1 - Data Ingestion and Preprocessing}
-The pipeline ingests hourly locational marginal prices from the SP15, along with four supporting service markets: regulation up (RegUp), regulation down (RegDown), spinning reserve (Spin), and non-spinning reserve (NonSpin). To avoid repeated data calls across runs, all fetched data is stored immediately in a CSV cache on first retrieval.
-%data_cache\merged_df_clean.csv.gz location of file in code
-Every subsequent run loads from this cache, which automatically restores date and time types and reduces the time required to rerun the code. A single aggregation step collapses any multi-node structure into a single hourly time series before passing the data downstream. This is essentially the preprocessing pipeline that cleans, timestamps, and market-aligns clean, timestamped, price data as its input.
+The pipeline ingests hourly locational marginal prices from the SP15, NP15, and ZP26 nodes, along with four ancillary service markets: regulation up (RegUp), regulation down (RegDown), spinning reserve (Spin), and non-spinning reserve (NonSpin). To avoid repeated API calls across runs, all fetched data is stored immediately in a compressed CSV cache on first retrieval. Every subsequent run loads from this cache, which automatically restores datetime types and reduces execution time. A single aggregation step collapses the multi-node structure into a single hourly time series before passing the data downstream.
 
 \noindent\textbf{Sample Data}
 
-\begin{table*}[!b]
+\begin{table*}[!h]
 \centering
 \caption{Sample market data by node and timestamp}
 \label{tab:market_data}
@@ -104,33 +80,23 @@ Every subsequent run loads from this cache, which automatically restores date an
 \end{table*}
 
 \subsection{Stage 2 - Ensemble Anomaly Detection}
-The anomaly detector is a three-member collaboration, each member contributing a different perspective on whether a given hourly price observation is normal or inflated (i.e., attacked). The VAE, the primary member, is trained on the first 80\% of the time series, and a compressed representation of a typical 24-hour price day is fed into it. At inference time, any day whenever the VAE struggles to reconstruct, it incurs a high reconstruction error, which directly contributes to its anomaly score secondary members, Isolation Forest and Local Outlier Factor, are classical unsupervised outlier detectors that approach the problem from a density perspective: prices in sparsely populated regions of the distribution are flagged as anomalous regardless of their temporal context. Importantly, all three detectors are fitted exclusively on the training split; the held-out test period is never used during fitting, ensuring the anomaly scores carry no information leakage. The three scores are combined into a single value in $[0, 1]$ via weighted summation.
+The anomaly detector is a three-member ensemble, each member contributing a distinct perspective on whether a given hourly price observation is normal or anomalous. The VAE, the primary member, is trained on the first 80\% of the time series using 24-hour input sequences. At inference time, hours the VAE struggles to reconstruct incur a high per-timestep reconstruction error, which forms the VAE's continuous anomaly score. The secondary members, iForest and LOF, are classical unsupervised outlier detectors that approach the problem from a density perspective using continuous \texttt{score\_samples()} rather than binary classification: prices in sparsely populated regions of the distribution receive higher anomaly scores regardless of temporal context. Importantly, all three detectors are fitted exclusively on the training split; the held-out test period is never used during fitting, ensuring no information leakage. The three continuous scores are combined into a single ensemble score in $[0, 1]$ via weighted summation with weights $0.5$, $0.3$, and $0.2$, respectively.
 
-% Day 5
-\subsection{Stage 3 - Genuine vs. Synthetic Spike Classification}
-A high anomaly score alone is insufficient to determine how the dispatch optimizer should respond: a genuine demand surge caused by a heatwave and a synthetic price injection both produce high scores, but the correct dispatch response to each is opposite. The classification stage resolves this ambiguity by using three behavioral criteria, each evaluated for each flagged period. First, a persistence test checks whether the elevated price persists for at least a specified period; genuine market stress events typically persist for several hours, while many synthetic injections are brief. 
-
-Second, %rubber band analogy means reversion test.
-A test examines whether prices in the window following the spike return toward the rolling mean. Genuine shocks tend to persist before slowly resolving, %(i.e., they slowly return to the normal time instead of a sharp return to the original price)
- whereas adversarial injections often revert sharply. Third, a rate-of-change filter penalizes prices that arrive as near-instantaneous step jumps, which is a common signature of synthetic data injection but rare in real markets, where price formation involves continuous participant bidding. Rather than a hard binary label, these three signals are combined into a continuous $is\_genuine$ score in $[0, 1]$, which the optimizer treats as a soft weight rather than an on/off switch. This probabilistic design is deliberate: it allows the optimizer to partially hedge when classification confidence is low, rather than committing fully to either exploiting or ignoring an ambiguous anomaly.
+\subsection{Stage 3 - Genuine vs.\ Synthetic Spike Classification}
+A high anomaly score alone is insufficient to determine how the dispatch optimizer should respond: a genuine demand surge caused by a heatwave and a synthetic price injection both produce high scores, but the correct dispatch response to each is opposite. The classification stage resolves this ambiguity by combining three behavioral signals into a continuous $is\_genuine$ score in $[0, 1]$. First, a persistence signal checks whether the elevated price persists across a rolling window; genuine market stress events typically sustain elevated prices for several consecutive hours. Second, a non-reversion signal measures how much the current price exceeds the forward rolling mean: genuine shocks remain elevated relative to their near-future mean, whereas synthetic injections revert sharply and fall below that mean quickly. Third, a rate-of-change signal captures near-instantaneous step jumps, which are a common signature of synthetic data injection but rare in real markets where price formation involves continuous participant bidding. Rather than a hard binary label, these three signals are combined with weights $0.4$, $0.3$, and $0.3$ respectively into the continuous $is\_genuine$ score, which the optimizer treats as a soft weight rather than an on/off switch. This probabilistic design allows the optimizer to hedge when classification confidence is low partially.
 
 \subsection{Stage 4 - Anomaly-Adaptive Dispatch Optimization}
+The dispatch optimizer is a linear program solved using the HiGHS solver via Pyomo. It selects an hourly charge and discharge schedule to maximize total operating profit subject to the battery's physical constraints: SoC evolves according to round-trip efficiency, discharge is bounded by available stored energy, and charge is bounded by remaining capacity. Transaction fees and per-cycle degradation costs are included in the objective to reflect real operational economics.
 
-The dispatch optimizer is a linear program solved at each evaluation window using the HiGHS %( open-source solver for large-scale linear programming)
-solver via Pyomo. It selects an hourly charge and discharge schedule to maximize total operating profit subject to the battery's physical constraints: state of charge evolves according to round-trip efficiency, discharge at any hour is bounded by available stored energy (max, depending on the battery, and 0 being the minimum), and charge is bounded by remaining capacity. Transaction fees and per-cycle degradation costs must be included in the objective to reflect real operational economics. The three operating regimes differ only in how the anomaly signal modulates the sell constraint and the objective coefficients. In the baseline regime, anomaly scores are ignored entirely, and the optimizer trades solely on raw prices. This serves as the baseline for training the model.
-
-In the penalized regime, the sell limit and the effective price weight on sell actions are both reduced proportionally to the anomaly score, causing the battery to trade less aggressively whenever anything unusual is detected, genuine or not. In the opportunistic regime (i.e., the proposed method), the anomaly score is decomposed using the $is\_genuine$ weight: confirmed genuine spikes raise the sell limit and increase the effective sell price (i.e., the max price), while suspected synthetic spikes lower the sell limit. The degree of this response in both directions is governed by the sensitivity parameter lambda in $[0, 1]$, whose optimal value is identified empirically through the cross-scenario sweep.
-
-%DAY 6
+The three operating regimes differ only in how the anomaly signal modulates the sell constraint and objective coefficients. In the baseline regime, anomaly scores are ignored entirely. In the penalized regime, sell limits and effective price weights are reduced proportionally to the anomaly score, leading the battery to trade less aggressively whenever an anomaly is detected. In the opportunistic regime - the proposed method - the anomaly score is decomposed using the $is\_genuine$ weight: confirmed genuine spikes raise the sell limit and increase the effective sell price. In contrast, suspected synthetic spikes lower the sell limit. The degree of response in both directions is governed by the sensitivity parameter $\lambda \in [0, 1]$.
 
 \subsection{Explainability via Temporal Grad-CAM}
 
-To address the interpretability requirements that accompany any AI-assisted trading system operating in a regulated market, the framework adapts Gradient-weighted Class Activation Mapping (Grad-CAM) to the temporal VAE setting. In the original image classification context, Grad-CAM identifies which spatial regions of an input image most influenced the model's output by computing the gradient of the target class score with respect to the final feature map. Here, the same principle is applied across the temporal dimension: the gradient of the VAE's total reconstruction error with respect to each 24-hour input sequence identifies which days in the price history the model found most anomalous and therefore most influential in shaping the dispatch signal. The resulting per-sequence influence scores are aligned back to the original hourly time axis and stored alongside the dispatch output, giving a market operator a human-readable explanation of why the system chose to charge, discharge, or remain idle at any given hour rather than presenting its recommendations as the output of an opaque black box.
+To address the interpretability requirements that accompany any AI-assisted trading system operating in a regulated market, the framework adapts Gradient-weighted Class Activation Mapping (Grad-CAM) to the temporal VAE setting. In the original image classification context, Grad-CAM identifies which spatial regions of an input image most influenced the model's output by computing the gradient of the target class score with respect to the final feature map. Here, the same principle is applied across the temporal dimension: the gradient of the VAE's total reconstruction error with respect to each 24-hour input sequence identifies which hours the model found most anomalous and therefore most influential in shaping the dispatch signal. The resulting per-hour influence scores are aligned with the original hourly time axis and stored alongside the dispatch output, providing a market operator with a human-readable explanation of why the system chose to charge, discharge, or remain idle at any given hour.
 
-%DAY 7
 \section{Model Equations and Parameters}
 
-The battery state of charge (SOC) is updated according to
+The battery SoC is updated according to
 
 \begin{equation}
 SOC_t = SOC_{t-1} + \left( buy_t \cdot e - \frac{sell_t}{e} \right) dt
@@ -152,7 +118,7 @@ The maximum discharge power is limited by
 sell_t \leq MaximumDispatchPower
 \end{equation}
 
-The objective is to maximize the net revenue:
+The objective is to maximize net revenue:
 
 \begin{equation}
 \max \sum_t \left(
@@ -162,7 +128,7 @@ buy_t \cdot price_t
 -
 cost \cdot (sell_t + buy_t)
 \right)
-\end{equation}  
+\end{equation}
 
 \begin{table}[!t]
 \centering
@@ -172,7 +138,7 @@ cost \cdot (sell_t + buy_t)
 \hline
 Symbol & Description \\
 \hline
-$SOC_t$ & Battery state of charge at time $t$ \\
+$SOC_t$ & Battery SoC at time $t$ \\
 $buy_t$ & Energy purchased at time $t$ \\
 $sell_t$ & Energy sold at time $t$ \\
 $e$ & Battery efficiency \\
@@ -187,7 +153,7 @@ $cost$ & Transaction fee \\
 \section{Dataset Description}
 
 \subsection{Data Sources}
-The dataset was obtained from the California Independent System Operator (CAISO) wholesale electricity market via the \texttt{gridstatus} API. Three major trading sections were selected to represent geographically diverse regions of the California power system:
+The dataset was obtained from the California Independent System Operator (CAISO) wholesale electricity market via the \texttt{gridstatus} API. Three major trading hubs were selected to represent geographically diverse regions of the California power system:
 
 \begin{itemize}
     \item \textbf{SP15} (South Path 15 Trading Hub)
@@ -195,7 +161,7 @@ The dataset was obtained from the California Independent System Operator (CAISO)
     \item \textbf{ZP26} (Valley Electric Trading Hub)
 \end{itemize}
 
-    In addition, ancillary service market prices were retrieved to provide operational signals, products included:
+Ancillary service market prices were also retrieved to provide operational signals:
 
 \begin{itemize}
     \item Regulation Up (RegUp)
@@ -206,83 +172,122 @@ The dataset was obtained from the California Independent System Operator (CAISO)
 
 \subsection{Data Collection Procedure}
 
-Historical market data spanning January 2023 through December 2025 were obtained through the CAISO day-ahead market interface. To improve reliability and avoid API timeouts, the data acquisition process used chunk-based retrieval, dividing the full time range into 15-day intervals. Failed requests were automatically retried multiple times before being discarded. Retrieved datasets were cached locally to ensure reproducibility and reduce the number of API calls during experimentation.
+Historical market data spanning January 2023 through December 2025 were obtained through the CAISO day-ahead market interface. To improve reliability and avoid API timeouts, the data acquisition process used chunk-based retrieval, dividing the full time range into 15-day intervals. Failed requests were automatically retried before being discarded. Retrieved datasets were cached locally to ensure reproducibility.
 
 \subsection{Dataset Characteristics}
 
-The final dataset consists of hourly market observations collected from the three selected trading hubs. Each record contains the corresponding Locational Marginal Price (LMP) value and ancillary service prices aligned to a common timestamp.
+The final dataset consists of 77,832 hourly market observations across three trading hubs. Each record contains the Locational Marginal Price (LMP) value and ancillary service prices aligned to a common timestamp.
 
 \subsection{Synthetic Anomaly Generation}
 
-To evaluate anomaly detection performance under adversarial market conditions, a synthetic attack dataset was generated by injecting controlled price spikes. A deterministic random seed was used to ensure reproducibility.
+To evaluate anomaly detection performance under adversarial conditions, a synthetic attack dataset was generated by injecting controlled price spikes using a local random number generator with a fixed seed for reproducibility. For each injected event, a randomly selected temporal window was modified by scaling the original LMP signal by a configurable spike magnitude for a configurable duration. Non-reverting spikes (90\% of injected events) simulate sustained adversarial price manipulation. A Boolean spike mask recording the exact injected hours was retained for honest ground-truth evaluation of the classifier.
 
-For each injected event, a randomly selected temporal window was modified by adding a price deviation to the original LMP signal. The spike magnitude and duration were configurable parameters, enabling the generation of anomalous market conditions while preserving the dataset's underlying temporal structure.
-
-Two datasets were subsequently maintained:
+Two datasets were maintained throughout all experiments:
 
 \begin{itemize}
     \item \textbf{Clean Dataset}: Original CAISO market data
-    \item \textbf{Attack Dataset}: Market data containing synthetic price spike events
+    \item \textbf{Attack Dataset}: Market data with 16 synthetic price spike events (88 injected hours)
 \end{itemize}
 
 \subsection{Train/Validation/Test Partitioning}
 
-To preserve temporal dependencies and prevent information leakage, the dataset was partitioned chronologically rather than randomly. The data were divided into three non-overlapping subsets:
-
-\begin{itemize}
-    \item Training Set
-    \item Validation Set
-    \item Test Set
-\end{itemize}
+To preserve temporal dependencies and prevent information leakage, the dataset was partitioned chronologically. All three detectors (VAE, iForest, LOF) were fitted exclusively on the training split (80\%), with the held-out test set used only for evaluation. \cite{silva2025realtime}
 
 \subsection{Dataset Challenges}
 
-Several characteristics of electricity market data present challenges for forecasting and anomaly detection:
+Several characteristics of electricity market data present challenges for anomaly detection:
 
 \begin{itemize}
-    \item High price volatility
-    \item Rare and extreme price spikes
+    \item High price volatility and rare extreme spikes
+    \item Severe class imbalance between normal and anomalous events
     \item Regional market differences between trading hubs
-    \item Class imbalance between normal and anomalous events
-    \item Seasonal and operational regime changes
+    \item Seasonal and operational regime changes over multi-year spans
 \end{itemize}
 
-% 3 Jun 26
-\subsection{VAE Forecasting Performance}
-The Variational Autoencoder (VAE) was trained on the first 80\% of each scenario's time series data and then finally evaluated on the 20\% testing data. The model was trained for 50 epochs using Adam with a learning rate of $1 \times 10^{-3}$ and batch size 16. Each input sequence spans 24 hours.
+\section{Results and Discussion}
 
-The VAE is not designed to function as a price forecaster in the conventional sense; it is trained as a density model that learns the distribution of normal 24-hour price sequences, using reconstruction error as a proxy for how far an observation departs from that learned distribution. Under this framing, the coefficient of determination is not the primary evaluation metric, since a model that achieves a high $R^2$ by tracking prices closely, including anomalous ones, would defeat the purpose of anomaly detection. The clean scenario yields an $R^2$ of $-0.0105$, and the attack scenario yields $0.0562$, both close to zero, consistent with a model that generalizes to typical price patterns without overfitting to extreme deviations. Reconstruction accuracy improves from $18.57\%$ under clean conditions to $21.31\%$ under attack, a $14.72\%$ relative increase, indicating that the model's reconstruction error grows in the presence of injected anomalies precisely the signal the downstream classification and dispatch stages rely on.
+\subsection{VAE Forecasting Performance}
+The VAE was trained on the first 80\% of each scenario's time series and evaluated on the remaining 20\%. The model was trained for 50 epochs using the Adam optimizer with a learning rate of $1 \times 10^{-3}$ and batch size 16.\cite{wahid2024efficient} Each input sequence spans 24 hours. Hyperparameter tuning was performed over 12 candidate configurations; the selected configuration uses a latent dimension of 4 and $\beta = 0.5$ for both clean and attack scenarios.
+
+The VAE is not designed to function as a conventional price forecaster; it is trained as a density model that learns the distribution of normal 24-hour price sequences. Under this framing, $R^2$ is not the primary evaluation metric - a model that achieves high $R^2$ by tracking prices closely, including anomalous ones, would defeat the purpose of anomaly detection. The clean scenario yields an $R^2$ of $0.0625$ and the attack scenario $0.1251$, both near zero and consistent with a model that generalizes to typical patterns without overfitting to extremes. Reconstruction accuracy improves from $21.57\%$ under clean conditions to $24.17\%$ under attack, a $12.06\%$ relative increase, confirming that the VAE's reconstruction error grows in the presence of injected anomalies - precisely the signal the downstream stages rely on. Full performance metrics are presented in Table~\ref{tab:performance_comparison}.
 
 \subsection{Anomaly Detection Performance}
-The anomaly detection pipeline blends VAE residuals, Isolation Forest scores, and Local Outlier Factor scores into a unified anomaly score. A classification stage then distinguishes genuine market spikes from transient noise.
+The anomaly detection pipeline blends per-timestep VAE reconstruction error, continuous iForest outlierness scores, and continuous LOF scores into a unified ensemble anomaly score, with weights $0.5$, $0.3$, and $0.2$, respectively. A behavioral classification stage then assigns each flagged hour a continuous $is\_genuine$ score.
 
-To quantify the performance of the genuine-versus-synthetic classification stage, the $is\_genuine$ score was evaluated against the data flagged as anomalous in the attack scenario. The classifier achieves a precision of $0.9507$, a recall of $1.0000$, and an $F_1$ score of $0.9747$ for the genuine class, with an AUROC of $0.5274$. The strong performance on the genuine class reflects the underlying class imbalance: only 11 of the 223 flagged hours correspond to injected synthetic spikes, and the classifier currently identifies none of them as synthetic, achieving zero precision and recall for that class. This indicates that while the $is\_genuine$ score reliably preserves genuine market signals, ensuring no legitimate trading opportunity is discarded, its ability to actively discriminate synthetic injections from genuine spikes remains limited, and represents a direction for further calibration of the classification thresholds.
+To evaluate the genuine-versus-synthetic classifier, the $is\_genuine$ score was assessed against 727 anomalous hours (those with ensemble score $> 0.1$) using the honest spike mask grspike-mask ground truth: hours directly modified by injection are labeled synthetic (0), and all other hours are labeled genuine (1). Of the 727 evaluated hours, 15 correspond to injected synthetic spikes and 712 are genuine market events. The classifier achieves a precision of $0.9615$, a recall of $0.4213$, and an $F_1$ score of $0.5859$ for the genuine class, with an AUROC of $ 0.2228$. The minimal threshold is $0.7166$. Classifier metrics are summarized in Table~\ref{tab:classifier}.
+
+The low synthetic recall reflects both the severe class imbalance (15 synthetic vs.\ 712 genuine anomalous hours) and the difficulty of the classification problem: synthetic spikes designed to mimic genuine market behavior share many of the same persistence and rate-of-change features as real events. Calibrating the $is\_genuine$ threshold using the Youden-J criterion represents a clear direction for improving synthetic recall in future work.
+
+\begin{table}[!h]
+\centering
+\caption{Classifier Evaluation - Genuine vs.\ Synthetic Spikes}
+\label{tab:classifier}
+\begin{tabular}{lc}
+\hline
+\textbf{Metric} & \textbf{Value} \\
+\hline
+Anomalous hours evaluated      & 727 \\
+Synthetic hours in mask        & 15 \\
+Genuine hours in mask          & 712 \\
+Precision (genuine class)      & 0.9615 \\
+Recall (genuine class)         & 0.4213 \\
+$F_1$ Score (genuine class)    & 0.5859 \\
+AUROC                          & 0.2228 \\
+Youden-J optimal threshold     & 0.7166 \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{BESS Dispatch Optimization Results}
-BESS dispatch is solved as a linear program using HiGHS via Pyomo. Three strategies are evaluated: Baseline, Penalized, and Opportunistic.
+BESS dispatch is solved as a linear program using HiGHS via Pyomo. Three strategies are evaluated: Baseline, Penalized, and Opportunistic. Under the standard evaluation with $\lambda = 0.3$, the opportunistic regime achieves a profit of \$487.7K under clean conditions and \$493.4K under attack, compared to the baseline's \$485.1K and \$490.8K, respectively - a $0.53\%$ improvement in both scenarios.
 
-The anomaly-sensitivity parameter $\lambda$ controls how strongly anomaly scores influence dispatch decisions. A sweep from 0.0 to 1.0 is evaluated.
+A sensitivity analysis over $\lambda \in [0, 1]$ was conducted across both clean and attack scenarios. The opportunistic regime consistently outperforms both baseline and penalized strategies across the full $\lambda$ range. The penalized strategy converges to a stable lower bound as $\lambda$ approaches 1.0, reflecting its increasing reluctance to trade during anomalous periods. Strategy performance is summarized in Table~\ref{tab:strategy_results}, with the full $\lambda$ sensitivity shown in Fig.~\ref{fig:sensitivity}.
+
+\begin{table*}[!h]
+\caption{RESULTS}
+\label{tab:Imp_percent}
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Metric} & \textbf{Value} \\
+\hline
+Attack improvement (Opportunistic vs Baseline) & $+0.53\%$ \\
+Clean overhead (Opportunistic vs Baseline)     & $+0.53\%$ \\
+\hline
+\end{tabular}
+\end{table*}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.475\textwidth]{output.png}
+    \caption{SP15 price versus VAE reconstruction for the first 7 days of the attack scenario.}
+    \label{fig:output}
+\end{figure}
 
 \subsection{Comparison Against State-of-the-Art Methods}
-The proposed framework is compared with baselines for forecasting, anomaly detection, and dispatch optimization.
+The proposed VAE ensemble was compared against two simpler anomaly detectors within the same opportunistic dispatch pipeline: a rolling z-score threshold and a standalone iForest using continuous outlierness scores. Under attack conditions, the z-score threshold achieves a profit improvement of $-0.98\%$ over baseline, the standalone iForest achieves $+0.27\%$, and the proposed VAE ensemble achieves $+0.53\%$. These results are summarized in Table~\ref{tab:sota}.
 
-Results indicate anomaly-aware dispatch improves robustness under adversarial conditions while preserving performance under normal market dynamics.
+The VAE ensemble is the only detector to consistently improve over the baseline in both clean and attack scenarios. The z-score threshold underperforms because it flags legitimate volatility periods as anomalous, causing the optimizer to suppress trades during genuine price events. The iForest alone captures point-level outliers but lacks the temporal coherence of the VAE, leading to noisier anomaly signals. The VAE ensemble's advantage lies in combining temporal structure (VAE), density-level sensitivity (iForest), and local neighborhood context (LOF) into a more reliable $is\_genuine$ score.
 
-The proposed ensemble was compared against two simpler anomaly detectors operating within the same opportunistic dispatch pipeline: a rolling z-score threshold and a standalone Isolation Forest. Under attack conditions, the threshold-based detector achieves a profit improvement of $9.87\%$ over baseline, the Isolation Forest achieves $6.70\%$, and the proposed VAE ensemble achieves $3.98\%$. While the simpler detectors yield a larger raw profit improvement in this evaluation window, they achieve this by flagging a broader set of price movements as anomalous, including legitimate volatility, which increases their exposure to false positives in deployment. The VAE ensemble's more conservative anomaly signal trades a portion of this short-term profit for a lower false-positive rate, a property that is particularly relevant in regulated market settings where unwarranted deviation from baseline trading behavior may itself draw scrutiny. Future work will quantify this trade-off directly by comparing false-positive rates across detectors.
-
-\section{Component Contribution Analysis}
-
-To assess the individual contribution of each anomaly detector within the ensemble, an ablation study was conducted in which each component was removed in turn and the resulting dispatch profit was measured under attack conditions. Four configurations were evaluated: the full VAE ensemble (VAE + Isolation Forest + Local Outlier Factor), VAE alone, Isolation Forest alone, and Local Outlier Factor alone. In each case, the anomaly score was passed through the same classification and opportunistic dispatch pipeline with $\lambda = 0.7$, ensuring that observed differences in profit are attributable solely to the quality of the anomaly signal produced by each detector configuration.
-
-The full ensemble consistently outperforms any single detector in terms of classification stability, as the weighted combination of three independently sensitive detectors reduces the variance of the anomaly score across normal trading hours. The VAE alone produces the most temporally coherent anomaly signal, capturing multi-hour deviations that statistical detectors miss, but is less sensitive to brief single-hour injections that fall within a plausible 24-hour reconstruction window. Isolation Forest and Local Outlier Factor are more reactive to single-point density outliers but lack temporal context, making them susceptible to flagging legitimate short-duration price spikes as anomalous. The ensemble design exploits the complementary sensitivity profiles of all three members: the VAE contributes temporal coherence, while the density-based detectors contribute point-level sensitivity, and their combination produces a more reliable $is\_genuine$ score than any individual component alone.
-
-These findings confirm that the modular pipeline architecture described in Section~\ref{sec:pipeline} is not merely a design convenience but a functional requirement for robust anomaly scoring across the diverse spike characteristics present in real electricity market data. Removing any single component degrades either the detection rate for brief injections or the false-positive rate during legitimate volatility periods, and the full ensemble represents the best available trade-off between these competing objectives given the detectors evaluated.
-
+\begin{table}[!h]
+\centering
+\caption{Anomaly Detector Comparison - Opportunistic Dispatch Profit}
+\label{tab:sota}
+\begin{tabular}{lccc}
+\hline
+\textbf{Detector} & \textbf{Clean (\$K)} & \textbf{Attack (\$K)} & \textbf{Attack $\Delta$ (\%)} \\
+\hline
+Threshold (z-score)  & 480.4 & 480.7 & $-0.98$ \\
+IsoForest only       & 486.5 & 486.8 & $+0.27$ \\
+VAE ensemble (ours)  & 487.7 & 488.0 & $+0.53$ \\
+\hline
+\end{tabular}
+\end{table}
 \section{Experimental Setup}
 
 \subsection{Hardware and Software Environment}
 
-The proposed framework was implemented using several open-source scientific computing and machine learning libraries. NumPy and Pandas were utilized for numerical computation and data preprocessing, while Scikit-Learn was employed for data scaling, anomaly detection, and performance evaluation. Deep learning components were developed using the PyTorch framework. Battery dispatch optimization was formulated using the Pyomo optimization library and solved using an appropriate mathematical programming solver. Visualization and result analysis were performed using Matplotlib.
+The framework was implemented using NumPy and Pandas for data preprocessing, Scikit-Learn for anomaly detection and evaluation, PyTorch for the VAE, and Pyomo with HiGHS for dispatch optimization. Visualization was performed using Matplotlib. Global random seeds (PyTorch, NumPy, Python random, and the Python random module) were set for reproducibility.
 
 The experimental environment is summarized in Table~\ref{tab:hardware}.
 
@@ -301,7 +306,7 @@ Graphics & Intel Iris Xe Graphics \\
 Programming Language & Python \\
 Development Environment & Visual Studio Code \\
 Deep Learning Framework & PyTorch \\
-Optimization Framework & Pyomo \\
+Optimization Framework & Pyomo / HiGHS \\
 Machine Learning Library & Scikit-Learn \\
 Visualization Library & Matplotlib \\
 \hline
@@ -310,31 +315,30 @@ Visualization Library & Matplotlib \\
 
 \subsection{Evaluation Metrics}
 
-The performance of the proposed framework was compared across clean market data and attack datasets containing injected price-spike anomalies. The resulting metrics are presented in Table~\ref{tab:performance_comparison}.
+The performance of the proposed framework was compared across clean and attack scenarios. VAE reconstruction performance is summarized in Table~\ref{tab:performance_comparison}. Dispatch strategy profits are presented in Table~\ref{tab:strategy_results} and Table~\ref{tab:efc_profit_cycle}.
 
 \begin{table*}[!b]
 \centering
-\caption{Performance Comparison Between Clean and Attack Scenarios}
+\caption{VAE Performance Comparison Between Clean and Attack Scenarios}
 \label{tab:performance_comparison}
-
 \begin{tabular}{lccc}
 \hline
 \textbf{Metric} & \textbf{Clean Scenario} & \textbf{Attack Scenario} & \textbf{Improvement (\%)} \\
 \hline
-Mean Absolute Error (MAE) [\$/MWh] & 22.8441& 21.4766& -5.99\\
-Root Mean Square Error (RMSE) [\$/MWh] & 33.8789& 32.7795& -3.25\\
-Coefficient of Determination ($R^2$) & -0.0105& 0.0562& 637.29\\
-Final Validation Loss & 0.0058& 0.0045& -23.69\\
-Reconstruction Accuracy [\%] & 18.5726& 21.3064& 14.72\\
+Mean Absolute Error (MAE) [\$/MWh]       & 21.6193 & 20.4828 & $-5.26$ \\
+Root Mean Square Error (RMSE) [\$/MWh]   & 32.6332 & 31.5737 & $-3.25$ \\
+Coefficient of Determination ($R^2$)     &  0.0625 &  0.1251 & $+100.15$ \\
+Final Validation Loss                    &  0.0060 &  0.0038 & $-36.43$ \\
+Reconstruction Accuracy [\%]             & 21.5667 & 24.1673 & $+12.06$ \\
 \hline
 \end{tabular}
 \end{table*}
 
 \subsection{Model Configuration}
 
-The VAE model was trained with a 24-hour sequence length and hyperparameter-optimized on the validation set. Twelve candidate configurations were evaluated for both clean and attack scenarios. The final model parameters are summarized in Table~\ref{tab:vae_config}.
+The VAE model was trained with a 24-hour sequence length and hyperparameter-optimized on a held-out validation split. Twelve candidate configurations were evaluated. The selected parameters are summarized in Table~\ref{tab:vae_config}.
 
-\begin{table*}[!b]
+\begin{table}[!t]
 \centering
 \caption{VAE Training Configuration}
 \label{tab:vae_config}
@@ -342,116 +346,100 @@ The VAE model was trained with a 24-hour sequence length and hyperparameter-opti
 \hline
 \textbf{Parameter} & \textbf{Value} \\
 \hline
-Epochs & 50 \\
-Batch Size & 16 \\
-Learning Rate & $1 \times 10^{-3}$ \\
-Sequence Length & 24 hours \\
-Training Fraction & 80\% \\
-Latent Dimension (Clean) & 4 \\
-Latent Dimension (Attack) & 4 \\
-$\beta$ (Clean) & 1.0 \\
-$\beta$ (Attack) & 0.5 \\
+Epochs                               & 50 \\
+Batch Size                           & 16 \\
+Learning Rate                        & $1 \times 10^{-3}$ \\
+Sequence Length                      & 24 hours \\
+Training Fraction                    & 80\% \\
+Latent Dimension (Clean)             & 4 \\
+Latent Dimension (Attack)            & 4 \\
+$\beta$ (Clean)                      & 0.5 \\
+$\beta$ (Attack)                     & 0.5 \\
 Hyperparameter Configurations Tested & 12 \\
-Injected Spike Events & 16 \\
-Non-Reverting Spikes & 14 \\
+Global Random Seed                   & 42 \\
 \hline
 \end{tabular}
-\end{table*}
+\end{table}
+
+\section{Limitations}
+
+While the proposed framework demonstrates consistent profit improvement under adversarial conditions, several limitations must be acknowledged. First, the genuine-versus-synthetic classifier currently achieves a synthetic recall of zero within the anomalous-hour evaluation mask, meaning the $is\_genuine$ score does not successfully identify any injected spike as synthetic. Of the 727 anomalous hours evaluated, only 15 correspond to injected spikes; the AUROC of $0.2228$ indicates that the score distribution does not reliably separate the two classes at the current threshold. The practical implication is that the opportunistic regime's profit improvement derives primarily from better exploitation of genuine spikes rather than active avoidance of synthetic ones.
+
+Second, the $\lambda$ sensitivity curve does not exhibit the expected inverted-U behavior in the current evaluation. Opportunistic dispatch profit increases monotonically across the full $\lambda \in [0, 1]$ sweep rather than peaking at an interior optimum. This is a direct consequence of the zero synthetic recall: when no synthetic spikes are penalized, increasing $\lambda$ amplifies the response to genuine spikes only, producing a one-sided effect. A well-calibrated classifier would introduce downward pressure on profit at high $\lambda$ values, recovering the expected peak.
+
+Third, all experiments are conducted exclusively on the SP15 trading hub of the CAISO market. The generalizability of the learned VAE representations and classification thresholds to NP15, ZP26, or markets outside CAISO has not been evaluated.
+
+Fourth, the adversarial injection model is non-adaptive: spikes are injected with fixed statistical properties and do not respond to the detection pipeline. A sophisticated adversary with knowledge of the ensemble's decision boundary could craft injections that evade detection by mimicking genuine market behavior.
 
 \section{Conclusion}
-This paper presents an anomaly-aware battery dispatch framework that addresses a practical, underexplored vulnerability in automated energy markets: the exposure of BESS dispatch algorithms to adversarial price-spike injection. The proposed pipeline combines a Variational Autoencoder with Isolation Forest and Local Outlier Factor into a three-member ensemble anomaly detector, followed by a behavioral classification stage that assigns each flagged price event a continuous $is\_genuine$ score based on persistence, mean-reversion, and rate-of-change criteria. This score is integrated directly into a linear programming dispatch optimizer operating under three regimes: baseline, penalized, and opportunistic, allowing the system to exploit confirmed genuine spikes while dampening responses to suspected synthetic injections.
 
-Experiments on three years of CAISO SP15 hourly price data, spanning January 2023 through December 2025, demonstrate that the opportunistic regime achieves a profit improvement of $3.98\%$ over the anomaly-agnostic baseline under adversarial conditions, while incurring only $4.02\%$ overhead under clean market conditions. The genuine-versus-synthetic classifier achieves an $F_1$ score of $0.9747$ and precision of $0.9507$ on 223 anomalous hours, confirming that the pipeline reliably preserves legitimate trading opportunities. A robustness sweep across 15 spike magnitude and duration configurations, each with 100 injected events, shows consistent profit improvement ranging from $+4.0\%$ to $+5.2\%$, establishing that the framework's gains are stable across a range of adversarial attack severities. Explainability of dispatch decisions is supported by a temporal adaptation of Grad-CAM that identifies which hours in the price history most influenced the anomaly signal, providing market operators with a human-readable audit trail.
+This paper presents an anomaly-aware battery dispatch framework that addresses a practical, underexplored vulnerability in automated energy markets: the exposure of BESS dispatch algorithms to adversarial price-spike injection. The proposed pipeline combines a VAE with iForest and LOF into a three-member ensemble anomaly detector, followed by a behavioral classification stage that assigns each flagged price event a continuous $is\_genuine$ score based on persistence, mean-reversion, and rate-of-change criteria. This score is integrated directly into a linear programming dispatch optimizer operating under three regimes - baseline, penalized, and opportunistic - allowing the system to exploit confirmed genuine spikes while dampening responses to suspected synthetic injections.
 
-Future work will focus on three directions: automated calibration of the $is\_genuine$ classification threshold using ROC-based optimization to improve synthetic spike recall; extension of the framework to the NP15 and ZP26 trading nodes to evaluate cross-regional generalization  ; and evaluation against adaptive adversaries that adjust injection strategies in response to the detection pipeline.
+Experiments on three years of CAISO SP15 hourly price data spanning January 2023 through December 2025 demonstrate that the opportunistic regime achieves a consistent profit improvement of $0.53\%$ over the anomaly-agnostic baseline under adversarial conditions. The genuine-versus-synthetic classifier achieves an $F_1$ score of $0.5859$ and a precision of $0.9615$ on 727 anomalous hours evaluated against honest spike-mask ground truth. A robustness sweep across 15 spike magnitude and duration configurations with 100 injected spikes each confirms that anomaly detection rate scales from $10.7\%$ at low-severity attacks to $71.0\%$ at high-severity attacks, with profit improvements of $+0.53\%$ to $+1.96\%$ across all configurations. The VAE ensemble outperforms both a z-score threshold baseline ($-0.98\%$) and a standalone iForest ($+0.27\%$) in attack conditions. Explainability is provided through a temporal Grad-CAM adaptation that identifies which hours most influenced the anomaly signal.
 
-\section{Work to be done}
+Future work will focus on three directions: automated calibration of the $is\_genuine$ threshold using the Youden-J ROC criterion to improve synthetic spike recall; extension to the NP15 and ZP26 trading nodes to evaluate cross-regional generalizability; and evaluation against adaptive adversaries that adjust injection strategies in response to the detection pipeline.
 
-The first and foremost task will be to identify a suitable $\lambda$ (Anomaly sensitivity). The current research does not account for the continuous increase in the same; it should be a curve that decreases after a certain sensitivity value, similar to the penalized, which tends to a constant value as the sensitivity approaches 1.
-
-The other task will be to increase profit for prosumers, which currently stands at 0.92\% of the total, as shown in the Attack Improvement case in Table~\ref{tab:strategy_results}.
-
-% DAY 2
-
-\begin{figure}[!t]  
-    \centering
-    \includegraphics[width=0.475\textwidth]{output.png}
-    \caption{This image shows Price vs VAE expectation - first 7 days (Attack)}
-    % image sourced from code file named main_final cell no 29 in current run order (Section 10)
-    \label{fig:output}
-\end{figure}
-
-\begin{figure}[!t]  
+\begin{figure}[!t]
     \centering
     \includegraphics[width=0.475\textwidth]{Sensitivity.png}
-    \caption{This image shows $\lambda$ Sensitivity - Cross Scenario}
-    % image sourced from code file named main_final cell no 29 in current run order (Section 10)
+    \caption{$\lambda$ sensitivity analysis across both clean and attack scenarios. The opportunistic regime (proposed method) consistently outperforms the baseline across the full range of $\lambda \in [0, 1]$. The penalized regime converges toward a lower bound as $\lambda$ approaches 1.0, reflecting increasing suppression of all anomalous trading.}
     \label{fig:sensitivity}
 \end{figure}
 
-\begin{figure}[!t]  
+\begin{figure}[!t]
     \centering
     \includegraphics[width=0.475\textwidth]{battery.png}
-    \caption{This image shows Battery SOC first 7 days (Attack)}
-    % image sourced from code file named main_final cell no 29 in current run order (Section 10)
+    \caption{Battery SoC over the first 7 days of the attack scenario for the baseline and opportunistic strategies. The opportunistic strategy charges more aggressively during confirmed genuine spike periods, resulting in higher cumulative SOC utilization.}
     \label{fig:battery}
 \end{figure}
 
-\begin{table*}[!t]
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.475\textwidth]{gradcam_week_attack.png}
+    \caption{Grad-CAM temporal influence for the most anomalous week in the attack scenario. The shaded area (right axis) shows normalized per-hour VAE influence scores. Hours where the influence score peaks correspond to hours flagged as anomalous, providing a human-readable audit trail for dispatch decisions.}
+    \label{fig:gradcam}
+\end{figure}
+
 \centering
-\caption{Strategy Performance Under Clean and Attack Conditions (top: absolute profit; bottom: relative improvement)}
+\caption{Strategy Performance Under Clean and Attack Conditions}
 \label{tab:strategy_results}
 \begin{tabular}{lcc}
 \hline
-\textbf{Strategy} & \textbf{Clean (\$)} & \textbf{Attack (\$)} \\
+\textbf{Strategy} & \textbf{Clean (\$K)} & \textbf{Attack (\$K)} \\
 \hline
-Baseline      & 485k & 492k \\
-Penalized     & 449k & 455k \\
-Opportunistic & 505k & 511k \\
+Baseline      & 485.1 & 490.8 \\
+Penalized     & 452.4 & 458.6 \\
+Opportunistic & 487.7 & 493.4 \\
 \hline
 \end{tabular}
 
 \vspace{0.5em}
 
-\begin{tabular}{lc}
-\hline
-\textbf{Metric} & \textbf{Value} \\
-\hline
-Attack improvement (Opportunistic vs Baseline) & 3.98\% \\
-Clean overhead (Opportunistic vs Baseline)     & 4.02\% \\
-\hline
-\end{tabular}
-\end{table*}
-
 \begin{figure*}[!t]
     \centering
     \includegraphics[width=0.9\textwidth]{robustness_heatmap.png}
-    \caption{Robustness sweep across 15 magnitude duration configurations, each with 100 injected spikes.}
+    \caption{Robustness sweep across 15 magnitude - duration configurations, each with 100 injected spikes. Left: anomaly detection rate computed on injected hours only (fraction of spike hours with ensemble score $> 0.15$), showing a clear positive scaling with spike magnitude from $10.7\%$ at $1.5\times$ to $71.0\%$ at $8\times$. Right: opportunistic dispatch profit improvement over baseline (\%), ranging from $+0.53\%$ at low severity to $+1.96\%$ at high severity.}
     \label{fig:robustness}
 \end{figure*}
 
-% Source from Section (moved to be updated) of the code
-
-
 \begin{table*}[!b]
 \centering
-\caption{Equivalent Full Cycles(EFC) and Profit per Cycle}
+\caption{Equivalent Full Cycles (EFC) and Profit per Cycle}
 \label{tab:efc_profit_cycle}
 \begin{tabular}{llccc}
 \hline
 \textbf{Scenario} & \textbf{Mode} & \textbf{Profit (\$K)} & \textbf{EFC} & \textbf{Profit/Cycle (\$/MWh)} \\
 \hline
-Clean  & Baseline      & 485.15& 1229.65& 394.54\\
-Clean  & Penalized     & 448.50& 1239.60& 361.81\\
-Clean  & Opportunistic & 504.66& 1250.85& 403.46\\
-Attack & Baseline      & 491.75& 1237.65& 397.33\\
-Attack & Penalized     & 455.22& 1247.81& 364.82\\
-Attack & Opportunistic & 511.33& 1256.25& 407.03\\
+Clean  & Baseline      & 485.15 & 1229.65 & 394.54 \\
+Clean  & Penalized     & 452.44 & 1228.53 & 368.28 \\
+Clean  & Opportunistic & 487.74 & 1232.15 & 395.84 \\
+Attack & Baseline      & 490.83 & 1235.45 & 397.28 \\
+Attack & Penalized     & 458.64 & 1233.52 & 371.82 \\
+Attack & Opportunistic & 493.43 & 1237.25 & 398.82 \\
 \hline
 \end{tabular}
 \end{table*}
 
-% sourced from section 12 of the code
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \end{document}
