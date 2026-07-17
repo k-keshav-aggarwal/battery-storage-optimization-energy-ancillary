@@ -68,7 +68,7 @@ The pipeline ingests hourly locational marginal prices from the SP15, NP15, and 
 
 \noindent\textbf{Sample Data}
 
-% TABLE I -- placed here, immediately after the paragraph that introduces it
+% TABLE I -- wide/double-column, kept as-is
 \begin{table*}[!t]
 \centering
 \caption{Sample Market Data by Node and Timestamp}
@@ -101,13 +101,13 @@ To address the interpretability requirements that accompany any AI-assisted trad
 
 The resulting per-hour influence scores are aligned with the original hourly time axis and stored alongside the dispatch output, giving a market operator a human-readable explanation of why the system chose to charge, discharge, or remain idle at any given hour. Fig.~\ref{fig:gradcam} shows the Grad-CAM temporal influence for the most anomalous week in the attack scenario.
 
-% FIGURE (Grad-CAM) -- placed at the end of the subsection that describes it
-\begin{strip}
+% FIGURE 1 (Grad-CAM) -- now double-column, spans both columns
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.5\textwidth, keepaspectratio]{gradcam_week_attack.png}
+    \includegraphics[width=0.6\textwidth, keepaspectratio]{gradcam_week_attack.png}
     \caption{Grad-CAM temporal influence for the most anomalous week in the attack scenario. The shaded area (right axis) shows normalized per-hour VAE influence scores. Hours where the influence score peaks correspond to hours flagged as anomalous, providing a human-readable audit trail for dispatch decisions.}
     \label{fig:gradcam}
-\end{strip}
+\end{figure*}
 
 \section{Model Equations and Parameters}
 
@@ -139,7 +139,7 @@ The objective is to maximize net revenue:
 \max \sum_t \Bigl( sell_t \cdot price_t - buy_t \cdot price_t - cost \cdot (sell_t + buy_t) \Bigr)
 \end{equation}
 
-% TABLE II -- placed immediately after the equations, it documents
+% TABLE II -- single-column (small table, kept as-is)
 \begin{table}[!t]
 \centering
 \caption{Model Parameters and Variables}
@@ -210,7 +210,7 @@ Several characteristics of electricity market data present challenges for anomal
 \subsection{Hardware and Software Environment}
 The framework was implemented using NumPy and Pandas for data preprocessing, Scikit-Learn for anomaly detection and evaluation, PyTorch for the VAE~\cite{VAE}, and Pyomo~\cite{Pyomo} with HiGHS~\cite{HiGHS} for dispatch optimization. Visualization was performed using Matplotlib. Global random seeds (PyTorch, NumPy, and Python's \texttt{random} module) were fixed at 42 for reproducibility. The experimental environment is summarized in Table~\ref{tab:hardware}.
 
-% TABLE III
+% TABLE III -- single-column (small table, kept as-is)
 \begin{table}[!t]
 \centering
 \caption{Experimental Computing Environment}
@@ -236,7 +236,7 @@ Visualization           & Matplotlib \\
 \subsection{Model Configuration}
 The VAE was trained with the Adam optimizer~\cite{Adam} for 50 epochs, with a batch size of 16 and a learning rate of $1\times10^{-3}$. Each input sequence spans 24 hours. Hyperparameter tuning was performed over 12 candidate configurations. The selected configuration uses a latent dimension of 4 and $\beta = 0.5$ for both clean and attack scenarios. Full training parameters are listed in Table~\ref{tab:vae_config}.
 
-% TABLE IV
+% TABLE IV -- single-column (small table, kept as-is)
 \begin{table}[!t]
 \centering
 \caption{VAE Training Configuration}
@@ -266,8 +266,7 @@ VAE reconstruction performance is assessed using MAE, RMSE, $R^2$, final validat
 \subsection{VAE Reconstruction Performance}
 The VAE was trained on the first 80\% of each scenario's time series and evaluated on the remaining 20\%. The VAE is not designed as a conventional price forecaster; it is trained as a density model that learns the distribution of normal 24-hour price sequences. Under this framing, $R^2$ is not the primary evaluation metric here: a model that achieves high $R^2$ by tracking prices closely, including anomalous ones, would defeat the purpose of anomaly detection. The clean scenario yields an $R^2$ of $0.0625$ and the attack scenario $0.1251$, both near zero and consistent with a model that generalizes to typical patterns without overfitting to extremes. Reconstruction accuracy improves from $21.57\%$ under clean conditions to $24.17\%$ under attack, a $12.06\%$ relative increase, confirming that the VAE's reconstruction error grows in the presence of injected anomalies, precisely the signal the downstream stages rely on. Full metrics are in Table~\ref{tab:performance_comparison}, and Fig.~\ref{fig:output} shows a representative 7-day reconstruction trace.
 
-
-% TABLE V (wide) -- VAE performance comparison
+% TABLE V (wide) -- double-column, kept as-is
 \begin{table*}[!t]
 \centering
 \caption{VAE Reconstruction Performance: Clean vs.\ Attack Scenario}
@@ -292,7 +291,7 @@ To evaluate the genuine-versus-synthetic classifier, the $is\_genuine$ score was
 
 The low synthetic recall reflects both the severe class imbalance (15 synthetic vs.\ 712 genuine anomalous hours) and the difficulty of the classification problem: synthetic spikes designed to mimic genuine market behavior share many of the same persistence and rate-of-change features as real events. Calibrating the $is\_genuine$ threshold using the Youden-J criterion~\cite{Youden} is a clear direction for improving synthetic recall in future work.
 
-% TABLE VI -- classifier evaluation
+% TABLE VI -- single-column (small table, kept as-is)
 \begin{table}[!t]
 \centering
 \caption{Classifier Evaluation: Genuine vs.\ Synthetic Spikes}
@@ -318,7 +317,7 @@ BESS dispatch is solved as a linear program using HiGHS~\cite{HiGHS} via Pyomo~\
 
 A sensitivity analysis over $\lambda \in [0, 1]$ was conducted across both clean and attack scenarios. The opportunistic regime consistently outperforms both baseline and penalized strategies across the full $\lambda$ range (Fig.~\ref{fig:sensitivity}). The penalized strategy converges to a stable lower bound as $\lambda$ approaches $1.0$, reflecting its increasing reluctance to trade during anomalous periods. Battery SoC trajectories for the first 7 days of the attack scenario are shown in Fig.~\ref{fig:battery}.
 
-% TABLE VII -- strategy results (wide)
+% TABLE VII -- wide, double-column, kept as-is
 \begin{table*}[!t]
 \centering
 \caption{Strategy Performance Under Clean and Attack Conditions ($\lambda = 0.3$)}
@@ -334,23 +333,23 @@ Opportunistic & 487.7 & 493.4 & $+0.53$ \\
 \end{tabular}
 \end{table*}
 
-% FIGURE 2 -- sensitivity plot, referenced in the paragraph above
-\begin{figure}[!t]
+% FIGURE 2 -- sensitivity plot, now double-column
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.475\textwidth]{Sensitivity.png}
+    \includegraphics[width=0.9\textwidth, keepaspectratio]{Sensitivity.png}
     \caption{$\lambda$ sensitivity analysis across clean and attack scenarios. The opportunistic regime (proposed method) consistently outperforms the baseline across $\lambda \in [0, 1]$. The penalized regime converges toward a lower bound as $\lambda \to 1.0$.}
     \label{fig:sensitivity}
-\end{figure}
+\end{figure*}
 
-% FIGURE 3 -- battery SoC
-\begin{figure}[!t]
+% FIGURE 3 -- battery SoC, now double-column
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.475\textwidth]{battery.png}
+    \includegraphics[width=0.9\textwidth, keepaspectratio]{battery.png}
     \caption{Battery SoC over the first 7 days of the attack scenario for the baseline and opportunistic strategies. The opportunistic strategy charges more aggressively during confirmed genuine spike periods, resulting in higher cumulative SoC utilization.}
     \label{fig:battery}
-\end{figure}
+\end{figure*}
 
-% TABLE VIII -- EFC (wide, bottom of page)
+% TABLE VIII -- wide, double-column, kept as-is (bottom of page)
 \begin{table*}[!b]
 \centering
 \caption{Equivalent Full Cycles (EFC) and Profit per Cycle}
@@ -372,10 +371,10 @@ Attack & Opportunistic & 493.43 & 1237.25 & 398.82 \\
 \subsection{Robustness Sweep}
 A robustness sweep across 15 spike magnitude-duration configurations, each with 100 injected spikes, confirms that the anomaly detection rate scales from $10.7\%$ at $1.5\times$ magnitude to $71.0\%$ at $8\times$ magnitude, with profit improvements of $+0.53\%$ to $+1.96\%$ across all configurations (Fig.~\ref{fig:robustness}).
 
-% FIGURE 4 -- wide robustness heatmap
+% FIGURE 4 -- wide robustness heatmap, double-column, kept as-is
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.9\textwidth]{robustness_heatmap.png}
+    \includegraphics[width=0.9\textwidth, keepaspectratio]{robustness_heatmap.png}
     \caption{Robustness sweep across 15 magnitude-duration configurations, each with 100 injected spikes. \textit{Left}: anomaly detection rate on injected hours only (fraction of spike hours with ensemble score $> 0.15$), scaling from $10.7\%$ at $1.5\times$ to $71.0\%$ at $8\times$. \textit{Right}: opportunistic dispatch profit improvement over baseline (\%), ranging from $+0.53\%$ to $+1.96\%$.}
     \label{fig:robustness}
 \end{figure*}
@@ -385,7 +384,7 @@ The proposed VAE ensemble was compared against two simpler anomaly detectors wit
 
 The VAE ensemble is the only detector that consistently improves over the baseline in both clean and attack scenarios. The z-score threshold underperforms because it flags legitimate volatility periods as anomalous, causing the optimizer to suppress trades during genuine price events. The iForest alone captures point-level outliers but lacks the temporal coherence of the VAE~\cite{VAE}, leading to noisier anomaly signals. The VAE ensemble's advantage comes from combining temporal structure (VAE), density-level sensitivity (iForest~\cite{IForest}), and local neighborhood context (LOF~\cite{LOF}) into a more reliable $is\_genuine$ score.
 
-% TABLE IX -- SOTA comparison
+% TABLE IX -- single-column (small table, kept as-is)
 \begin{table}[!t]
 \centering
 \caption{Anomaly Detector Comparison: Opportunistic Dispatch Profit}
