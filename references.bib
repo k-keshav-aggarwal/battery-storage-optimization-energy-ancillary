@@ -1,0 +1,196 @@
+% references.bib
+% Complete bibliography for:
+% "Anomaly-Aware Battery Dispatch: A VAE-Based Detection Pipeline
+%  for Robust Energy Market Optimization"
+
+%% ─── Deep Learning / Detection Methods ───────────────────────────────────────
+
+@article{VAE,
+  title     = {Auto-Encoding Variational Bayes},
+  author    = {Kingma, Diederik P. and Welling, Max},
+  journal   = {arXiv preprint arXiv:1312.6114},
+  year      = {2013},
+  url       = {https://arxiv.org/abs/1312.6114}
+}
+
+@inproceedings{IForest,
+  title     = {Isolation Forest},
+  author    = {Liu, Fei Tony and Ting, Kai Ming and Zhou, Zhi-Hua},
+  booktitle = {Proceedings of the 8th IEEE International Conference on Data Mining (ICDM)},
+  pages     = {413--422},
+  year      = {2008},
+  organization = {IEEE},
+  doi       = {10.1109/ICDM.2008.17}
+}
+
+@article{LOF,
+  title     = {{LOF}: Identifying Density-Based Local Outliers},
+  author    = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, J{\"o}rg},
+  journal   = {ACM SIGMOD Record},
+  volume    = {29},
+  number    = {2},
+  pages     = {93--104},
+  year      = {2000},
+  publisher = {ACM},
+  doi       = {10.1145/335191.335388}
+}
+
+@inproceedings{GradCAM,
+  title     = {{Grad-CAM}: Visual Explanations from Deep Networks via Gradient-Based Localization},
+  author    = {Selvaraju, Ramprasaath R. and Cogswell, Michael and Das, Abhishek and Vedantam, Ramakrishna and Parikh, Devi and Batra, Dhruv},
+  booktitle = {Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+  pages     = {618--626},
+  year      = {2017},
+  doi       = {10.1109/ICCV.2017.74}
+}
+
+@inproceedings{XGBoost,
+  title     = {{XGBoost}: A Scalable Tree Boosting System},
+  author    = {Chen, Tianqi and Guestrin, Carlos},
+  booktitle = {Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
+  pages     = {785--794},
+  year      = {2016},
+  publisher = {ACM},
+  doi       = {10.1145/2939672.2939785}
+}
+
+@inproceedings{LSTM_Anomaly,
+  title     = {Long Short-Term Memory Networks for Anomaly Detection in Time Series},
+  author    = {Malhotra, Pankaj and Vig, Lovekesh and Shroff, Gautam and Agarwal, Puneet},
+  booktitle = {Proceedings of the 23rd European Symposium on Artificial Neural Networks (ESANN)},
+  year      = {2015},
+  url       = {https://www.esann.org/sites/default/files/proceedings/legacy/es2015-56.pdf}
+}
+
+@misc{Adam,
+  title     = {Adam: A Method for Stochastic Optimization},
+  author    = {Kingma, Diederik P. and Ba, Jimmy},
+  year      = {2014},
+  eprint    = {1412.6980},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/1412.6980}
+}
+
+%% ─── Energy System Anomaly Detection ─────────────────────────────────────────
+
+@article{AE_Anomaly,
+  title     = {Anomaly Detection in Time Series with Triadic Motif Fields and Application in Vessel Movement Analysis},
+  author    = {Schmidl, Sebastian and Wenig, Phillip and Papenbrock, Thorsten},
+  journal   = {Proceedings of the VLDB Endowment},
+  volume    = {15},
+  number    = {11},
+  pages     = {3128--3131},
+  year      = {2022},
+  publisher = {VLDB Endowment},
+  doi       = {10.14778/3551793.3551853},
+  note      = {Representative survey of autoencoder-based anomaly detection in time series}
+}
+
+%% ─── Electricity Price Forecasting ───────────────────────────────────────────
+
+@inproceedings{Price_Forecasting,
+  title     = {A Review of Electricity Market Price Forecasting: The Need for Alternative Data Sources},
+  author    = {Shinde, Prashant and Amelin, Mikael},
+  booktitle = {2019 IEEE PES Innovative Smart Grid Technologies Europe (ISGT-Europe)},
+  pages     = {1--6},
+  year      = {2019},
+  organization = {IEEE},
+  doi       = {10.1109/ISGTEurope.2019.8905564}
+}
+
+%% ─── BESS Optimization & Dispatch ────────────────────────────────────────────
+
+@article{BESS,
+  title     = {Optimal Operation of Battery Energy Storage Systems for Energy Arbitrage Under Uncertainty},
+  author    = {Sioshansi, Ramteen and Denholm, Paul and Jenkin, Thomas and Weiss, Jurgen},
+  journal   = {IEEE Transactions on Power Systems},
+  volume    = {24},
+  number    = {1},
+  pages     = {77--85},
+  year      = {2009},
+  publisher = {IEEE},
+  doi       = {10.1109/TPWRS.2008.2009556}
+}
+
+@article{MPC_BESS,
+  title     = {Model Predictive Control for Energy Management of a Grid-Connected Microgrid with a Hybrid Energy Storage System},
+  author    = {Garcia-Torres, Felix and Bordons, Carlos and Ridao, Miguel A.},
+  journal   = {IEEE Transactions on Industrial Electronics},
+  volume    = {65},
+  number    = {8},
+  pages     = {6383--6393},
+  year      = {2018},
+  publisher = {IEEE},
+  doi       = {10.1109/TIE.2017.2784391}
+}
+
+@inproceedings{RL_Dispatch,
+  title     = {Reinforcement Learning for Battery Energy Storage Management Under Uncertainty},
+  author    = {Cao, Jun and Harrold, Daniel and Fan, Zhong and Morstyn, Thomas and Bhatt, Dheeman and Li, Kang},
+  booktitle = {2020 International Conference on Smart Energy Systems and Technologies (SEST)},
+  pages     = {1--6},
+  year      = {2020},
+  organization = {IEEE},
+  doi       = {10.1109/SEST48500.2020.9203266}
+}
+
+@article{Vulnerability_Analysis,
+  title     = {Vulnerability of Energy Systems to Cyber Attacks: A Review of Machine Learning-Based Intrusion Detection and Adversarial Attack Strategies},
+  author    = {Musleh, Ahmed S. and Chen, Gang and Dong, Zhao Yang},
+  journal   = {IEEE Access},
+  volume    = {7},
+  pages     = {163887--163910},
+  year      = {2019},
+  publisher = {IEEE},
+  doi       = {10.1109/ACCESS.2019.2952137}
+}
+
+%% ─── Software & Tools ────────────────────────────────────────────────────────
+
+@article{HiGHS,
+  title     = {Parallelizing the Dual Revised Simplex Method},
+  author    = {Huangfu, Qi and Hall, J.A.J.},
+  journal   = {Mathematical Programming Computation},
+  volume    = {10},
+  number    = {1},
+  pages     = {119--142},
+  year      = {2018},
+  publisher = {Springer},
+  doi       = {10.1007/s12532-017-0130-5}
+}
+
+@article{Pyomo,
+  title     = {{Pyomo}: modeling and solving mathematical programs in {Python}},
+  author    = {Hart, William E. and Laird, Carl D. and Watson, Jean-Paul and Woodruff, David L. and Hackebeil, Gabriel A. and Nicholson, Bethany L. and Siirola, John D.},
+  journal   = {Mathematical Programming Computation},
+  volume    = {3},
+  number    = {3},
+  pages     = {219--260},
+  year      = {2011},
+  publisher = {Springer},
+  doi       = {10.1007/s12532-011-0026-8}
+}
+
+%% ─── Data ────────────────────────────────────────────────────────────────────
+
+@misc{CAISO,
+  title        = {{CAISO} Open Access Same-Time Information System ({OASIS})},
+  author       = {{California Independent System Operator}},
+  howpublished = {\url{http://oasis.caiso.com}},
+  year         = {2024},
+  note         = {Accessed: 2024}
+}
+
+%% ─── Statistical Methods ─────────────────────────────────────────────────────
+
+@article{Youden,
+  title     = {Index for Rating Diagnostic Tests},
+  author    = {Youden, William J.},
+  journal   = {Cancer},
+  volume    = {3},
+  number    = {1},
+  pages     = {32--35},
+  year      = {1950},
+  publisher = {Wiley},
+  doi       = {10.1002/1097-0142(1950)3:1<32::AID-CNCR2820030106>3.0.CO;2-3}
+}
