@@ -1,0 +1,13 @@
+# Verified working set for the src/ pipeline (Python 3.13).
+numpy>=2.0,<3
+pandas>=2.2,<3
+scikit-learn>=1.5
+scipy>=1.14          # provides HiGHS via scipy.optimize.linprog
+torch>=2.4           # CPU-only is sufficient; nothing here needs a GPU
+xgboost>=2.0
+matplotlib>=3.8
+
+# Optional, only for the legacy notebooks:
+# pyomo>=6.7
+# highspy>=1.7
+# gridstatus>=0.29   # live CAISO fetch in pull_prices.py
