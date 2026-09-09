@@ -32,12 +32,23 @@
       "n_caught": 29
     }
   },
-  "dispatch_lambda_0.3": {
+  "dispatch_lambda_0.3_settlement_aware": {
     "clean_baseline": 485145.3558452963,
-    "clean_opportunistic": 522491.57110273966,
-    "attack_baseline": 497582.64311767847,
-    "attack_opportunistic": 527999.0741896699,
-    "clean_uplift_pct": 7.6979434735334085,
-    "attack_uplift_pct": 6.112840046311252
+    "attack_baseline": 482901.7917663703,
+    "attack_penalised": 479833.42537429905,
+    "attack_classifier_informed": 482170.26087170595,
+    "attack_baseline_vs_clean_baseline_pct": -0.4624519336100641,
+    "attack_classifier_informed_vs_attack_baseline_pct": -0.15148647346876487,
+    "clean_classifier_informed_vs_clean_baseline_pct": 0.0
+  },
+  "robustness_sweep_summary": {
+    "detection_rate_range": [
+      0.06720977596741344,
+      0.6387959866220736
+    ],
+    "profit_change_pct_range": [
+      -0.03282843783998235,
+      0.3622002554334536
+    ]
   }
 }

@@ -29,6 +29,9 @@ max_discharge_power_mw = 10.0
 # Notebook-compatible aliases.
 mcp = battery_capacity_mwh
 mdp = max_discharge_power_mw
+BATTERY_CAPACITY_MWH = battery_capacity_mwh
+MAX_CHARGE_MW = max_charge_power_mw
+MAX_DISCHARGE_MW = max_discharge_power_mw
 
 # ---- Efficiency & Costs ----
 round_trip_efficiency = 0.80
@@ -37,8 +40,11 @@ e = efficiency
 
 transaction_fee = 0.5
 fee = transaction_fee
+EFFICIENCY = round_trip_efficiency
+FEE = transaction_fee
 
 # Throughput-based degradation cost per MWh.
 degradation_cost = 2.5 
+DEGRADATION_COST_PER_MWH = degradation_cost
 
 RANDOM_SEED = 42

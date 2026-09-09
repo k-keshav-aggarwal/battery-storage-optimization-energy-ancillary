@@ -1,0 +1,66 @@
+{
+  "strategy_1_dispatch": {
+    "no_signal_baseline": 30197.020282169957,
+    "iso_score": 30753.657064047387,
+    "vae_score": 30192.817588972575,
+    "diffusion_score": 30165.66030889182,
+    "lstm_score": 30762.337074344796
+  },
+  "strategy_2_signal_pnl": {
+    "iso_score": {
+      "detector": {
+        "total_profit": 442.69738,
+        "n_trades": 33,
+        "win_rate": 0.9090909090909091,
+        "avg_pnl": 13.415072121212122
+      },
+      "random_baseline": {
+        "total_profit": -3.8827133333333386,
+        "n_trades": 33
+      }
+    },
+    "vae_score": {
+      "detector": {
+        "total_profit": 83.6671133333333,
+        "n_trades": 18,
+        "win_rate": 0.6111111111111112,
+        "avg_pnl": 4.648172962962962
+      },
+      "random_baseline": {
+        "total_profit": -6.029480000000003,
+        "n_trades": 18
+      }
+    },
+    "diffusion_score": {
+      "detector": {
+        "total_profit": 112.19574333333338,
+        "n_trades": 23,
+        "win_rate": 0.6521739130434783,
+        "avg_pnl": 4.8780757971014514
+      },
+      "random_baseline": {
+        "total_profit": 1.1342099999999853,
+        "n_trades": 23
+      }
+    },
+    "lstm_score": {
+      "detector": {
+        "total_profit": 564.8913366666665,
+        "n_trades": 84,
+        "win_rate": 0.6785714285714286,
+        "avg_pnl": 6.724896865079363
+      },
+      "random_baseline": {
+        "total_profit": 167.80973,
+        "n_trades": 84
+      }
+    }
+  },
+  "strategy_3_rl": {
+    "with_anomaly_signal_mean": 37217.486140211564,
+    "with_anomaly_signal_std": 2017.49408077363,
+    "without_anomaly_signal_mean": 23451.076924676127,
+    "without_anomaly_signal_std": 3179.9182289570535
+  },
+  "winner_col": "lstm_score"
+}
