@@ -23,44 +23,92 @@
 
 \bibitem{Vulnerability_Analysis}
 A.~Dey and M.~V. Salapaka, ``Reinforcement learning-based electricity market
-  vulnerability analysis under cyber-topology attack,'' in \emph{2023 IEEE
-  Power \& Energy Society Innovative Smart Grid Technologies Conference
-  (ISGT)}, 2023, pp. 1--5.
+  vulnerability analysis under cyber-topology attack,'' in \emph{Proc. IEEE
+  Power \& Energy Society Innovative Smart Grid Technologies Conf. (ISGT)},
+  2023, pp. 1--5.
 
 \bibitem{AE_Anomaly}
 M.~Flavio, C.~B. do~Prado, L.~F.~R. da~Costa~Carmo, A.~O. de~S{\'a},
   P.~Ferrari, and M.~Pasetti, ``Autoencoder-based approach to detect stealth
-  cyberattacks in battery energy storage systems,'' in \emph{2024 IEEE
-  International Workshop on Metrology for Industry 4.0 \& IoT
-  (MetroInd4.0\&IoT)}, 2024, pp. 452--457.
+  cyberattacks in battery energy storage systems,'' in \emph{Proc. IEEE Int.
+  Workshop on Metrology for Industry 4.0 \& IoT (MetroInd4.0\&IoT)}, 2024, pp.
+  452--457.
+
+\bibitem{Xie_FDI}
+L.~Xie, Y.~Mo, and P.~R. Kumar, ``False data injection attacks in electricity
+  markets: A cyber-physical approach,'' \emph{IEEE Transactions on Smart Grid},
+  vol.~2, no.~1, pp. 149--158, 2011.
+
+\bibitem{Kosut_Market_FDI}
+O.~Kosut, L.~Jia, R.~J. Thomas, and L.~Tong, ``Malicious data attacks on the
+  smart grid: Impact on state estimation and financial arbitrage,'' \emph{IEEE
+  Transactions on Smart Grid}, vol.~2, no.~4, pp. 716--726, 2011.
+
+\bibitem{Liu_FDI_Power}
+Y.~Liu, P.~Ning, and M.~K. Reiter, ``False data injection attacks against state
+  estimation in electric power grids,'' \emph{ACM Transactions on Information
+  and System Security}, vol.~14, no.~1, pp. 1--33, 2011.
 
 \bibitem{CAISO}
 {California Independent System Operator}, ``Day-ahead market locational
   marginal prices,''
   \url{https://www.caiso.com/market-operations/market-data-and-reporting},
-  2025, accessed: Jul. 2026.
+  2025, accessed: Dec. 2025.
 
 \bibitem{Price_Forecasting}
 H.~Shahinzadeh, H.~Nafisi, M.~Bagheri, S.~Mehrabani-Najafabadi, M.~A. Hejazi,
   and F.~Jurado, ``Forecasting electricity price spikes in competitive markets
   using a hybrid deep learning framework with shap and grey wolf
-  optimization,'' in \emph{2025 6th International Conference on Optimizing
-  Electrical Energy Consumption (OEEC)}, 2025, pp. 1--5.
+  optimization,'' in \emph{Proc. 6th Int. Conf. on Optimizing Electrical Energy
+  Consumption (OEEC)}, 2025, pp. 1--5.
+
+\bibitem{Weron_EPF}
+R.~Weron, ``Electricity price forecasting: A review of the state-of-the-art
+  with a look into the future,'' \emph{International Journal of Forecasting},
+  vol.~30, no.~4, pp. 1030--1081, 2014.
+
+\bibitem{Lago_EPF_Benchmark}
+J.~Lago, G.~Marcjasz, B.~{De Schutter}, and R.~Weron, ``Forecasting day-ahead
+  electricity prices: A review of state-of-the-art algorithms, best practices
+  and an open-access benchmark,'' \emph{Applied Energy}, vol. 293, p. 116983,
+  2021.
 
 \bibitem{LSTM_Anomaly}
 P.~Malhotra, L.~Vig, G.~Shroff, and P.~Agarwal, ``Long short-term memory
-  networks for anomaly detection in time series,'' in \emph{Proceedings of the
-  23rd European Symposium on Artificial Neural Networks (ESANN)}, 2015, pp.
-  89--94.
+  networks for anomaly detection in time series,'' in \emph{Proc. 23rd Eur.
+  Symp. on Artificial Neural Networks (ESANN)}, 2015, pp. 89--94.
+
+\bibitem{Audibert_USAD}
+J.~Audibert, P.~Michiardi, F.~Guyard, S.~Marti, and M.~A. Zuluaga, ``{USAD}:
+  Unsupervised anomaly detection on multivariate time series,'' in \emph{Proc.
+  26th ACM SIGKDD Int. Conf. on Knowledge Discovery and Data Mining (KDD)},
+  2020, pp. 3395--3404.
+
+\bibitem{Zhang_MSCRED}
+C.~Zhang, D.~Song, Y.~Chen, X.~Shen, A.~Cotterell, and G.~Lu, ``A deep neural
+  network for unsupervised anomaly detection and diagnosis in multivariate time
+  series data,'' in \emph{Proc. AAAI Conf. on Artificial Intelligence},
+  vol.~33, no.~1, 2019, pp. 1409--1416.
+
+\bibitem{Kieu_RNN_Ensemble}
+T.~Kieu, B.~Yang, C.~Guo, and C.~S. Jensen, ``Outlier detection for time series
+  with recurrent autoencoder ensembles,'' in \emph{Proc. 28th Int. Joint Conf.
+  on Artificial Intelligence (IJCAI)}, 2019, pp. 2725--2732.
 
 \bibitem{VAE}
-D.~P. Kingma and M.~Welling, ``Auto-encoding variational bayes,'' \emph{arXiv
+D.~P. Kingma and M.~Welling, ``Auto-encoding variational {Bayes},'' \emph{arXiv
   preprint arXiv:1312.6114}, 2013.
 
 \bibitem{DDPM}
 J.~Ho, A.~Jain, and P.~Abbeel, ``Denoising diffusion probabilistic models,'' in
   \emph{Advances in Neural Information Processing Systems (NeurIPS)}, vol.~33,
   2020, pp. 6840--6851.
+
+\bibitem{Xu_Donut_VAE}
+H.~Xu, W.~Chen, N.~Zhao, Z.~Li, J.~Bu, Z.~Li, Y.~Liu, Y.~Zhao, D.~Pei, Y.~Feng
+  \emph{et~al.}, ``Unsupervised anomaly detection via variational auto-encoder
+  for seasonal {KPIs} in web applications,'' in \emph{Proc. 2018 World Wide Web
+  Conf. (WWW)}, 2018, pp. 187--196.
 
 \bibitem{MPC_BESS}
 P.~Kou, D.~Liang, and L.~Gao, ``Stochastic energy scheduling in microgrids with
@@ -70,7 +118,7 @@ P.~Kou, D.~Liang, and L.~Gao, ``Stochastic energy scheduling in microgrids with
 \bibitem{BESS}
 S.~P. Sajeev, L.~Roth, T.~Gangwar, J.~A. Adu, I.~A. Sakowski, and A.~Monti,
   ``Risk-aware stochastic optimization for battery energy arbitrage dispatch
-  planning,'' in \emph{2025 IEEE Kiel PowerTech}, 2025, pp. 1--6.
+  planning,'' in \emph{Proc. IEEE Kiel PowerTech}, 2025, pp. 1--6.
 
 \bibitem{RL_Dispatch}
 J.~Cao, D.~Harrold, Z.~Fan, T.~Morstyn, D.~Healey, and K.~Li, ``Deep
@@ -78,16 +126,99 @@ J.~Cao, D.~Harrold, Z.~Fan, T.~Morstyn, D.~Healey, and K.~Li, ``Deep
   lithium-ion battery degradation model,'' \emph{IEEE Transactions on Smart
   Grid}, vol.~11, no.~5, pp. 4513--4521, 2020.
 
+\bibitem{Shi_BESS_Coopt}
+Y.~Shi, B.~Xu, D.~Wang, and B.~Zhang, ``Using battery storage for peak shaving
+  and frequency regulation: Joint optimization for superlinear gains,''
+  \emph{IEEE Transactions on Power Systems}, vol.~33, no.~3, pp. 2882--2894,
+  2018.
+
+\bibitem{He_CAISO_BESS}
+G.~He, Q.~Chen, C.~Kang, P.~Pinson, and Q.~Xia, ``Optimal investment and
+  dispatch planning of battery energy storage systems in
+  transmission-constrained markets,'' \emph{IEEE Transactions on Power
+  Systems}, vol.~33, no.~4, pp. 3831--3842, 2018.
+
 \bibitem{GRU}
 K.~Cho, B.~van Merri{\"{e}}nboer, C.~Gulcehre, D.~Bahdanau, F.~Bougares,
   H.~Schwenk, and Y.~Bengio, ``Learning phrase representations using {RNN}
-  encoder-decoder for statistical machine translation,'' in \emph{Proceedings
-  of the 2014 Conference on Empirical Methods in Natural Language Processing
-  (EMNLP)}, 2014, pp. 1724--1734.
+  encoder-decoder for statistical machine translation,'' in \emph{Proc. Conf.
+  on Empirical Methods in Natural Language Processing (EMNLP)}, 2014, pp.
+  1724--1734.
+
+\bibitem{Chen_DRL_BESS}
+T.~Chen, S.~Bu, X.~Liu, J.~Kang, F.~R. Yu, and Z.~Han, ``Peer-to-peer energy
+  trading and energy conversion in local energy systems with distributed energy
+  resources,'' \emph{IEEE Transactions on Smart Grid}, vol.~12, no.~5, pp.
+  4187--4198, 2021.
+
+\bibitem{Singh_V2G}
+M.~Singh, P.~Kumar, and I.~Kar, ``Implementation of vehicle to grid
+  infrastructure for frequency regulation in a microgrid,'' \emph{IEEE
+  Transactions on Smart Grid}, vol.~3, no.~2, pp. 560--568, 2012.
 
 \bibitem{IForest}
 F.~T. Liu, K.~M. Ting, and Z.-H. Zhou, ``Isolation forest,'' \emph{IEEE
   Transactions on Knowledge and Data Engineering}, vol.~25, no.~6, pp.
   1619--1632, 2012.
+
+\bibitem{Adam}
+D.~P. Kingma and J.~Ba, ``Adam: A method for stochastic optimization,''
+  \emph{arXiv preprint arXiv:1412.6980}, 2014.
+
+\bibitem{GAT}
+P.~Veli{\v{c}}kovi{\'{c}}, G.~Cucurull, A.~Casanova, A.~Romero, P.~Li{\`{o}},
+  and Y.~Bengio, ``Graph attention networks,'' in \emph{Proc. Int. Conf. on
+  Learning Representations (ICLR)}, 2018.
+
+\bibitem{Xu_BESS_Degradation}
+B.~Xu, J.~Zhao, T.~Zheng, E.~Litvinov, and D.~S. Kirschen, ``Factoring the
+  cycle aging cost of batteries into optimal power flow,'' \emph{IEEE
+  Transactions on Power Systems}, vol.~33, no.~2, pp. 2240--2248, 2018.
+
+\bibitem{Peterson_BESS_Degradation}
+S.~B. Peterson, J.~Apt, and J.~F. Whitacre, ``Lithium-ion battery cell
+  degradation resulting from realistic vehicle and vehicle-to-grid
+  utilization,'' \emph{Journal of Power Sources}, vol. 195, no.~8, pp.
+  2385--2392, 2010.
+
+\bibitem{Watkins_QLearning}
+C.~J. C.~H. Watkins and P.~Dayan, ``Q-learning,'' \emph{Machine Learning},
+  vol.~8, no.~3, pp. 279--292, 1992.
+
+\bibitem{Sutton_RL}
+R.~S. Sutton and A.~G. Barto, \emph{Reinforcement Learning: An Introduction},
+  2nd~ed.\hskip 1em plus 0.5em minus 0.4em\relax Cambridge, MA: MIT Press,
+  2018.
+
+\bibitem{Mnih_DQN}
+V.~Mnih, K.~Kavukcuoglu, D.~Silver, A.~A. Rusu, J.~Veness, M.~G. Bellemare,
+  A.~Graves, M.~Riedmiller, A.~K. Fidjeland, G.~Ostrovski \emph{et~al.},
+  ``Human-level control through deep reinforcement learning,'' \emph{Nature},
+  vol. 518, no. 7540, pp. 529--533, 2015.
+
+\bibitem{Hasselt_DoubleDQN}
+H.~van Hasselt, A.~Guez, and D.~Silver, ``Deep reinforcement learning with
+  double {Q}-learning,'' in \emph{Proc. AAAI Conf. on Artificial Intelligence},
+  vol.~30, no.~1, 2016, pp. 2094--2100.
+
+\bibitem{Liang_FDI_StateEstimation}
+J.~Liang, O.~Kosut, and L.~Sankar, ``Cyber attacks on {AC} state estimation:
+  Unobservability and physical consequences,'' \emph{IEEE Transactions on Power
+  Systems}, vol.~32, no.~4, pp. 2591--2603, 2017.
+
+\bibitem{Kurt_FDI_Detection}
+M.~N. Kurt, Y.~Yilmaz, and X.~Wang, ``Real-time detection of false data
+  injection attacks on power grid state estimation,'' \emph{IEEE Transactions
+  on Information Forensics and Security}, vol.~13, no.~2, pp. 449--462, 2018.
+
+\bibitem{Goodfellow_Adversarial}
+I.~J. Goodfellow, J.~Shlens, and C.~Szegedy, ``Explaining and harnessing
+  adversarial examples,'' in \emph{Proc. Int. Conf. on Learning Representations
+  (ICLR)}, 2015.
+
+\bibitem{XGBoost}
+T.~Chen and C.~Guestrin, ``{XGBoost}: A scalable tree boosting system,'' in
+  \emph{Proc. 22nd ACM SIGKDD Int. Conf. on Knowledge Discovery and Data
+  Mining}, 2016, pp. 785--794.
 
 \end{thebibliography}
