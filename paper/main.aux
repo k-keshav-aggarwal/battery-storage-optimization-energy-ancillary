@@ -1,0 +1,102 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand*\HyPL@Entry[1]{}
+\citation{Vulnerability_Analysis,AE_Anomaly}
+\citation{CAISO}
+\citation{Price_Forecasting}
+\citation{AE_Anomaly,LSTM_Anomaly}
+\citation{VAE,DDPM}
+\citation{MPC_BESS,BESS,RL_Dispatch}
+\HyPL@Entry{0<</S/D>>}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{I}{1}{Introduction}{section.1}{}}
+\citation{LSTM_Anomaly,GRU}
+\citation{VAE}
+\citation{DDPM}
+\citation{MPC_BESS}
+\citation{BESS}
+\citation{RL_Dispatch}
+\citation{CAISO}
+\citation{IForest}
+\citation{VAE}
+\citation{LSTM_Anomaly,GRU}
+\citation{DDPM}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{II}{2}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Data and Chronological Partitioning}{2}{section.3}\protected@file@percent }
+\newlabel{sec:dataset}{{III}{2}{Data and Chronological Partitioning}{section.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Nomenclature and Parameter Settings}}{2}{table.1}\protected@file@percent }
+\newlabel{tab:nomenclature}{{I}{2}{Nomenclature and Parameter Settings}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Detection Pipeline and Model Formulations}{2}{section.4}\protected@file@percent }
+\newlabel{sec:detectors}{{IV}{2}{Detection Pipeline and Model Formulations}{section.4}{}}
+\newlabel{eq:score}{{1}{2}{Detection Pipeline and Model Formulations}{equation.4.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces System architecture. Raw CAISO price feeds move through causal feature extraction into Stage 1 (an iForest pre-filter) and Stage 2 (deep autoencoders and multi-node models); a five-seed ensemble then feeds both the battery dispatch policies and the adversarial defense filters.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:architecture}{{1}{3}{System architecture. Raw CAISO price feeds move through causal feature extraction into Stage 1 (an iForest pre-filter) and Stage 2 (deep autoencoders and multi-node models); a five-seed ensemble then feeds both the battery dispatch policies and the adversarial defense filters}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Detection Results and Model Comparison}{3}{section.5}\protected@file@percent }
+\newlabel{sec:eval}{{V}{3}{Detection Results and Model Comparison}{section.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Test-window ROC curves for the 5-seed ensemble models on CAISO data --- GRU-AE (downward triangle), LSTM-AE (diamond), Diffusion (upward triangle), iForest (circle), VAE (square) --- with the inset showing the operational low-false-positive region ($\text  {FPR} \le 0.12$).}}{3}{figure.2}\protected@file@percent }
+\newlabel{fig:roc}{{2}{3}{Test-window ROC curves for the 5-seed ensemble models on CAISO data --- GRU-AE (downward triangle), LSTM-AE (diamond), Diffusion (upward triangle), iForest (circle), VAE (square) --- with the inset showing the operational low-false-positive region ($\text {FPR} \le 0.12$)}{figure.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Master Performance Summary: Reconstruction Fidelity and Anomaly Detection Across All Models}}{4}{table.2}\protected@file@percent }
+\newlabel{tab:detector_results}{{II}{4}{Master Performance Summary: Reconstruction Fidelity and Anomaly Detection Across All Models}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Six-month test price timeline on SP15, showing reference anomalies (filled circles) against LSTM-AE detections (open squares); the model's flags line up well with the major price spikes.}}{4}{figure.3}\protected@file@percent }
+\newlabel{fig:timeline}{{3}{4}{Six-month test price timeline on SP15, showing reference anomalies (filled circles) against LSTM-AE detections (open squares); the model's flags line up well with the major price spikes}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Arbitrage Earnings Across Both Test Windows (LSTM-AE Signal)}}{5}{table.3}\protected@file@percent }
+\newlabel{tab:economics}{{III}{5}{Arbitrage Earnings Across Both Test Windows (LSTM-AE Signal)}{table.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Turning Detection into Profit}{5}{section.6}\protected@file@percent }
+\newlabel{sec:economics}{{VI}{5}{Turning Detection into Profit}{section.6}{}}
+\newlabel{eq:qlearning}{{2}{5}{Turning Detection into Profit}{equation.6.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Per-Detector Arbitrage Performance (Window 1)}}{5}{table.4}\protected@file@percent }
+\newlabel{tab:perdetector}{{IV}{5}{Per-Detector Arbitrage Performance (Window 1)}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Adversarial Robustness: A Companion Study}{5}{section.7}\protected@file@percent }
+\newlabel{sec:adversarial}{{VII}{5}{Adversarial Robustness: A Companion Study}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Break-Even Precision Analysis ($p^*$)}{5}{subsection.7.1}\protected@file@percent }
+\newlabel{eq:breakeven}{{3}{5}{Break-Even Precision Analysis ($p^*$)}{equation.7.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Window 1 cumulative trading returns. (a) Heuristic dispatch, directional spread trading, and tabular Q-learning, showing how the anomaly signal nearly quadruples Q-learning profit while cutting seed variance tenfold. (b) Directional arbitrage profit and win rate across the four detector families.}}{6}{figure.4}\protected@file@percent }
+\newlabel{fig:profit}{{4}{6}{Window 1 cumulative trading returns. (a) Heuristic dispatch, directional spread trading, and tabular Q-learning, showing how the anomaly signal nearly quadruples Q-learning profit while cutting seed variance tenfold. (b) Directional arbitrage profit and win rate across the four detector families}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Adversarial Detection and Economic Recovery (5 Seeds)}}{6}{table.5}\protected@file@percent }
+\newlabel{tab:adv_detect}{{V}{6}{Adversarial Detection and Economic Recovery (5 Seeds)}{table.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Break-Even Precision: Machine-Learning Classifier vs.\ Simple Threshold}}{6}{table.6}\protected@file@percent }
+\newlabel{tab:breakeven}{{VI}{6}{Break-Even Precision: Machine-Learning Classifier vs.\ Simple Threshold}{table.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Cross-Attack Generalization}{6}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Discussion and Practical Takeaways}{6}{section.8}\protected@file@percent }
+\newlabel{sec:discussion}{{VIII}{6}{Discussion and Practical Takeaways}{section.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Breakeven precision trade-off. (a) Net cash flow versus precision $p$ for the learned classifier ($p^*=0.334$, operating at $p=0.891$) against the simple threshold rule ($p^*=1.017$). (b) The asymmetry in false-alarm penalties: a threshold false alarm costs $18.3\times $ as much as a true positive saves.}}{7}{figure.5}\protected@file@percent }
+\newlabel{fig:breakeven}{{5}{7}{Breakeven precision trade-off. (a) Net cash flow versus precision $p$ for the learned classifier ($p^*=0.334$, operating at $p=0.891$) against the simple threshold rule ($p^*=1.017$). (b) The asymmetry in false-alarm penalties: a threshold false alarm costs $18.3\times $ as much as a true positive saves}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Cross-Attack Transfer Performance Across Source and Target Threat Types (5-Seed Average)}}{7}{table.7}\protected@file@percent }
+\newlabel{tab:transfer}{{VII}{7}{Cross-Attack Transfer Performance Across Source and Target Threat Types (5-Seed Average)}{table.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Limitations and Future Work}{7}{section.9}\protected@file@percent }
+\newlabel{sec:limitations}{{IX}{7}{Limitations and Future Work}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {X}Conclusion}{7}{section.10}\protected@file@percent }
+\newlabel{sec:conclusion}{{X}{7}{Conclusion}{section.10}{}}
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{Vulnerability_Analysis}{1}
+\bibcite{AE_Anomaly}{2}
+\bibcite{CAISO}{3}
+\bibcite{Price_Forecasting}{4}
+\bibcite{LSTM_Anomaly}{5}
+\bibcite{VAE}{6}
+\bibcite{DDPM}{7}
+\bibcite{MPC_BESS}{8}
+\bibcite{BESS}{9}
+\bibcite{RL_Dispatch}{10}
+\bibcite{GRU}{11}
+\bibcite{IForest}{12}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Cross-attack transfer evaluation. (a) The detection AUROC matrix shows uniformly high nominal values ($\ge 0.75$). (b) The economic recovery matrix reveals severe cross-attack vulnerabilities --- for example, $-40.9\%$ when transferring from Sinusoidal to Adaptive.}}{8}{figure.6}\protected@file@percent }
+\newlabel{fig:transfer}{{6}{8}{Cross-attack transfer evaluation. (a) The detection AUROC matrix shows uniformly high nominal values ($\ge 0.75$). (b) The economic recovery matrix reveals severe cross-attack vulnerabilities --- for example, $-40.9\%$ when transferring from Sinusoidal to Adaptive}{figure.6}{}}
+\@writefile{toc}{\contentsline {section}{References}{8}{section*.1}\protected@file@percent }
+\gdef \@abspage@last{8}

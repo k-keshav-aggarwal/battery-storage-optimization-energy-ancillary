@@ -1,0 +1,54 @@
+{
+  "detection_recall_main_scenario": 0.375,
+  "classifier_logreg": {
+    "auroc": 0.9258090668068976,
+    "ap": 0.9980574258757154,
+    "threshold": 0.8095652043061781,
+    "genuine": {
+      "precision": 0.9990458015267175,
+      "recall": 0.7570498915401301,
+      "f1": 0.8613739201974496
+    },
+    "synthetic": {
+      "precision": 0.08695652173913043,
+      "recall": 0.9696969696969697,
+      "f1": 0.1596009975062344,
+      "n_caught": 32
+    }
+  },
+  "classifier_xgb": {
+    "auroc": 0.9723262998751068,
+    "ap": 0.9992409916632317,
+    "threshold": 0.48084044456481934,
+    "genuine": {
+      "precision": 0.9970887918486172,
+      "recall": 0.9906001446131598,
+      "f1": 0.9938338774029742
+    },
+    "synthetic": {
+      "precision": 0.6904761904761905,
+      "recall": 0.8787878787878788,
+      "f1": 0.7733333333333333,
+      "n_caught": 29
+    }
+  },
+  "dispatch_lambda_0.3_settlement_aware": {
+    "clean_baseline": 485145.3558452963,
+    "attack_baseline": 482901.7917663703,
+    "attack_penalised": 479833.42537429905,
+    "attack_classifier_informed": 482170.26087170595,
+    "attack_baseline_vs_clean_baseline_pct": -0.4624519336100641,
+    "attack_classifier_informed_vs_attack_baseline_pct": -0.15148647346876487,
+    "clean_classifier_informed_vs_clean_baseline_pct": 0.0
+  },
+  "robustness_sweep_summary": {
+    "detection_rate_range": [
+      0.06720977596741344,
+      0.6387959866220736
+    ],
+    "profit_change_pct_range": [
+      -0.03282843783998235,
+      0.3622002554334536
+    ]
+  }
+}

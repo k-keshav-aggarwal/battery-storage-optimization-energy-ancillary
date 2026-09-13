@@ -1,0 +1,38 @@
+{
+  "iso_score": {
+    "dispatch": 13128.423913870047,
+    "signal_pnl": {
+      "total_profit": 103.21278666666666,
+      "n_trades": 20,
+      "win_rate": 0.65,
+      "avg_pnl": 5.160639333333333
+    }
+  },
+  "vae_score": {
+    "dispatch": 13017.142993005229,
+    "signal_pnl": {
+      "total_profit": 48.130396666666684,
+      "n_trades": 39,
+      "win_rate": 0.5897435897435898,
+      "avg_pnl": 1.2341127350427354
+    }
+  },
+  "diffusion_score": {
+    "dispatch": 12740.266373705275,
+    "signal_pnl": {
+      "total_profit": 61.23948666666669,
+      "n_trades": 52,
+      "win_rate": 0.5769230769230769,
+      "avg_pnl": 1.1776824358974365
+    }
+  },
+  "lstm_score": {
+    "dispatch": 13089.41911176666,
+    "signal_pnl": {
+      "total_profit": 487.2016333333333,
+      "n_trades": 68,
+      "win_rate": 0.7647058823529411,
+      "avg_pnl": 7.164729901960784
+    }
+  }
+}

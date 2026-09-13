@@ -1,0 +1,23 @@
+# Tested with Python 3.12. Exact versions this pipeline was built and run
+# against; if you hit an incompatibility on a newer/older Python, these are
+# the versions to pin down to first.
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+scipy==1.17.1
+torch==2.13.0
+matplotlib==3.10.8
+nbformat==5.10.4
+nbconvert==7.17.1
+jupyter_client==8.9.1
+ipykernel==7.3.0
+
+# Notes:
+# - torch: CPU-only is sufficient (nothing here needs a GPU). If `pip install
+#   torch` pulls a multi-GB CUDA build you don't want, install from the CPU
+#   wheel index instead: pip install torch --index-url https://download.pytorch.org/whl/cpu
+# - pandas 3.x is a major-version jump from 2.x (copy-on-write is now the
+#   default, some deprecated APIs were removed). If you're on pandas 2.x and
+#   don't want to upgrade, the pipeline doesn't intentionally use any
+#   pandas-3-only API, but it also hasn't been tested against 2.x -- pin to
+#   3.0.2 if you hit an unexpected pandas error.

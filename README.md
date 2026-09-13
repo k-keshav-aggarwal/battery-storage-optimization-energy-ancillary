@@ -1,60 +1,113 @@
-## Summary
-A co-optimization battery storage model between Energy and Ancillary Service (AS) products [RegUp, Spin, RegDown, NonSpin] that finds a trading strategy to maximize revenue by Buying and Selling each hour.  For optimization we use Pyomo for model setup (see below constraints) and GLPK for solver.  You also have option to switch solvers to, e.g. gurobi or CBC.
+# Anomaly-Aware Battery Dispatch: A VAE-Based Detection Pipeline for Robust Energy Market Optimization
 
-We pull historical Energy and AS prices using the Gridstatus API (https://github.com/kmax12/gridstatus).  Append forecasted prices to the merged_df dataframe for a forecasted optimization.  Constraints described in the Cooptimization_Energy_As.py script are specified by the below assumptions:
+[![IEEE Paper](https://img.shields.io/badge/IEEE-Transactions-blue.svg)](paper/main.tex)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-green.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Battery Assumptions
+This repository contains the official, leak-free, reproducible implementation and paper manuscript for **"Anomaly-Aware Battery Dispatch: A VAE-Based Detection Pipeline for Robust Energy Market Optimization"**.
 
-- Maximum total charge level: 10 MWh
-- Initial charge level: Fully charged
-- Instantaneous charge/discharge
-- Efficiency factor: 0.80 for both charge and discharge
-- No simultaneous charging and discharging
-- Battery cannot discharge more energy than available
-- Battery cannot store more energy than maximum capacity
-- No simultaneous charging and discharging
+The framework combines a **Variational Autoencoder (VAE)**, **Isolation Forest (iForest)**, and **Local Outlier Factor (LOF)** anomaly detection ensemble with an **XGBoost** classifier and a **24-hour Day-Ahead Rolling Horizon Linear Programming Dispatcher (Pyomo / HiGHS)** to protect Battery Energy Storage Systems (BESS) from price-manipulation attacks in wholesale electricity markets (CAISO).
 
-## Trading Assumptions
+---
 
-- Trading fees: $1 per MWh for both buy and sell transactions
-- Buy/sell orders must be submitted one hour prior to execution
-- Only one Buy or Sell order per time interval
-- Cannot partcipate in multiple products at same time
+## 📁 Repository Structure
 
-## How to use
-- create virtual environment using conda or .venv
-- use git to clone repository `git clone https://github.com/romilan24/battery-storage-optimization-energy-ancillary`
-- type `pip install -r /path/to/requirements.txt` in cmd prompt
-- update path to local path where data is located
-- update path to your solver `line 106` on Cooptimization_Energy_AS.py
-- run script
+```
+battery-storage-optimization-energy-ancillary/
+├── src/                        # Modular, leak-free Python package
+│   ├── __init__.py
+│   ├── config.py               # Central physics, seed, and market configurations
+│   ├── data.py                 # CAISO cache ingestion & UTC->PST timezone alignment
+│   ├── features.py             # Strictly causal feature engineering
+│   ├── detect.py               # VAE + Isolation Forest + LOF ensemble
+│   ├── classify.py             # XGBoost genuine-vs-synthetic classifier
+│   ├── dispatch.py             # 24h rolling-horizon day-ahead HiGHS LP dispatcher
+│   ├── attack.py               # Price spike attack generators (naive, adaptive, sinusoidal)
+│   └── evaluate.py             # Bootstrap CIs, profit settlement & damage recovery
+├── scripts/                    # Entry point execution runners
+│   ├── run_experiment.py       # Main end-to-end experiment pipeline
+│   ├── run_breakeven.py        # False-positive / True-positive cost breakeven analysis
+│   ├── run_transfer.py         # Cross-family attack transfer evaluation
+│   ├── run_gnn_eval.py         # GNN baseline comparison runner
+│   ├── pull_prices.py          # Gridstatus CAISO data downloader
+│   └── gnn_vs_multivariate_control.py
+├── notebooks/                  # Canonical & archived Jupyter notebooks
+│   ├── Paper_Code_v2.1.ipynb   # Executed canonical notebook
+│   └── archive/                # Historical experimental notebook variants
+├── paper/                      # IEEE LaTeX source & bibliography
+│   ├── main.tex                # Submission manuscript source
+│   └── references.bib          # BibTeX references
+├── data_cache/                 # Cached compressed CAISO market datasets (2023-2025)
+├── artifacts_v2/               # Output JSON results & metrics
+├── figs/                       # Generated architecture diagrams & plots
+├── tests/                      # Pytest unit tests & leakage guardrails
+│   └── test_pipeline.py
+├── LICENSE
+├── README.md
+└── requirements.txt
+```
 
-## Example usecase
-In our example, params are initizlied with: 
+---
 
-location = 'TH_SP15_GEN-APND'
-start_date = 'Jan-01-2024'
-end_date = 'Mar-01-2024' 
+## ⚡ Quick Start
 
-so just two months of prices.  Note that CAISO also has AS prices called 'RegDownMileage' and 'RegUpMileage' which is the cost for cycling the unit but we're not considering this in our example.
+### 1. Environment Setup
+```bash
+# Clone the repository
+git clone https://github.com/k-keshav-aggarwal/battery-storage-optimization-energy-ancillary.git
+cd battery-storage-optimization-energy-ancillary
 
-Running our script we see that "Total profit: $102,349.83" with the following plots:
+# Create & activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate        # On Windows: .venv\Scripts\activate
 
-## Energy Prices
-![Image1](https://github.com/romilan24/battery-storage-optimization-energy-ancillary/blob/main/img/energy.png)
+# Install required dependencies
+pip install -r requirements.txt
+```
 
-## AS Prices
-![Image2](https://github.com/romilan24/battery-storage-optimization-energy-ancillary/blob/main/img/as.png)
+### 2. Run Guardrail Tests
+Verify that all feature causality, battery physical constraints, and leak-prevention unit tests pass:
+```bash
+python tests/test_pipeline.py
+# or
+pytest tests/
+```
 
-## Battery State of Charge (SOC) which is the variation in battery level as we Buy & Sell
-![Image3](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/battery_soc.png)
+### 3. Execute End-to-End Pipeline
+Run the full detection, classification, and rolling dispatch pipeline across default seeds:
+```bash
+# Naive attack scenario
+python scripts/run_experiment.py --attack naive --seeds 0 1 2 3 4
 
-## Buy and Sell decisions for each Product
-![Image4](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/Buy_Sell_per_Product.png)
+# Evasion-aware adaptive attack scenario
+python scripts/run_experiment.py --attack adaptive --seeds 0 1 2 3 4
 
-## Net Energy Flow
-![Image5](https://github.com/romilandc/battery-storage-optimization-energy-ancillary/blob/main/img/net_energy_flow.png)
+# Sinusoidal attack scenario
+python scripts/run_experiment.py --attack sinusoidal --seeds 0 1 2 3 4
+```
 
+---
 
-## Hourly and Cumulative Profit
-![Image5](https://github.com/romilan24/energy-ancillary-optimization/blob/main/img/hourly_Cum_Profit.png)
+## 🔬 Core Findings & Methodology Improvements
+
+The refactored package (`src/`) addresses critical data leakage issues found in legacy notebook prototypes:
+1. **Strictly Causal Feature Engineering**: Replaced centered/future-looking rolling windows (`shift(-window)`) with strictly trailing features.
+2. **Train-Only Normalization**: Score scaling and quantile normalization use training-split statistics only (`TrainStats`).
+3. **Event-Aware Cross-Validation**: Classifier evaluation uses strict temporal holdouts / GroupKFold by event ID to prevent leakages across contiguous multi-hour spike events.
+4. **Real-World Rolling Horizon Dispatch**: Replaced global clairvoyant 3-year Pyomo solvers with realistic 24-hour day-ahead rolling horizon dispatchers.
+5. **Settled Cash Accounting**: All profits are evaluated at actual cleared market prices rather than weighted objective terms.
+
+---
+
+## 📜 Paper Citation & Compilation
+
+To compile the IEEE paper LaTeX manuscript into PDF:
+```bash
+cd paper/
+pdflatex main.tex
+bibtex main
+pdflatex main.tex
+pdflatex main.tex
+```
+
+For questions or issues, please contact Keshav Aggarwal (`ka9812204392@gmail.com`).
