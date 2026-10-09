@@ -11,7 +11,6 @@
     \usepackage{microtype}
     \usepackage{balance}
     \usepackage[hidelinks]{hyperref}
-    \renewcommand{\thesection}{\arabic{section}}
 
     \ifdefined\pdfcompresslevel
     \pdfcompresslevel=9
@@ -184,29 +183,9 @@
 
     To explore the influence of the regional transmission environment on predictability, we also feed SP15, NP15, and ZP26 as inputs to two multi-hub models, which include a 3-channel multivariate LSTM (MV-LSTM) control and the graph neural network autoencoder (GNN-AE) ~\cite{GAT}.
 
-    All experiments were conducted using five random seeds (0 to 4), ensuring that \texttt{torch.set\_num\_threads(1)} was always set and that cuDNN flags were fixed to ensure determinism. Software frameworks utilized in the codebase are summarized in Table~\ref{tab:libraries}.
+    All experiments were conducted using five random seeds (0 to 4), ensuring that \texttt{torch.set\_num\_threads(1)} was always set and that cuDNN flags were fixed to ensure determinism.
+    To evaluate the performance of the proposed framework, all algorithmic evaluations were executed on a commodity laptop host consisting of a Dell Inspiron 15 workstation. The hardware execution layer features an Intel Core i7-1355U processor (10 cores, 1.70 GHz base clock, up to 5.0 GHz boost configuration), 16 GB of system RAM, and integrated Intel Iris Xe Graphics (128 MB). High-throughput dataset input/output operations were sustained using a 512 GB NVMe SSD operating under a Microsoft Windows 11 Home Single Language environment. The core computational pipelines were implemented within a unified Python ecosystem utilizing numpy (v2.0+) for matrix and tensor computations, pandas (v2.2+) for settlement series indexing, and scipy (v1.14+) for linear programming via the HiGHS solver. Machine learning implementations and defensive modeling relied on scikit-learn (v1.5+) for Isolation Forest and validation metrics, alongside torch (v2.4+) for deep autoencoders and Graph Neural Networks (GNNs). Finally, gradient boosted defenses were deployed via xgboost (v2.0+), with all performance and data visualizations generated using matplotlib (v3.8+).
 
-    \begin{table}[!t]
-    \centering
-    \caption{Python Libraries and Computational Frameworks}
-    \label{tab:libraries}
-    \scriptsize
-    \renewcommand{\arraystretch}{1.15}
-    \setlength{\tabcolsep}{3pt}
-    \begin{tabularx}{\columnwidth}{ll>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{2.2cm}}
-    \toprule
-    \textbf{Library} & \textbf{Version} & \textbf{Purpose} & \textbf{Link} \\
-    \midrule
-    numpy & 2.0+ & Matrix and tensor computation & \url{https://numpy.org} \\
-    pandas & 2.2+ & Settlement series indexing & \url{https://pandas.pydata.org} \\
-    scikit-learn & 1.5+ & Isolation Forest and metrics & \url{https://scikit-learn.org} \\
-    scipy & 1.14+ & Linear programming (HiGHS) & \url{https://scipy.org} \\
-    torch & 2.4+ & Deep autoencoders and GNN & \url{https://pytorch.org} \\
-    xgboost & 2.0+ & Gradient boosted defenses & \url{https://xgboost.ai} \\
-    matplotlib & 3.8+ & Data visualization & \url{https://matplotlib.org} \\
-    \bottomrule
-    \end{tabularx}
-    \end{table}
 
     \begin{table*}[!t]
     \centering
