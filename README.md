@@ -86,6 +86,19 @@ python scripts/run_experiment.py --attack adaptive --seeds 0 1 2 3 4
 python scripts/run_experiment.py --attack sinusoidal --seeds 0 1 2 3 4
 ```
 
+### 4. Refresh CAISO Market Data
+To rebuild the canonical cache, explicitly run:
+```bash
+python scripts/pull_prices.py --refresh
+```
+The downloader fetches the currently retrievable LMP interval directly from
+CAISO OASIS, prefers those fresh rows, and uses the validated archived cache
+only for unavailable or rate-limited intervals.  OASIS no longer serves the
+January 1--11, 2023 LMP interval; the resulting complete merged dataset
+therefore starts at January 12, 2023 and contains 25,944 complete UTC hours
+through December 31, 2025.  The generated files are written under
+`data_cache/`, which is intentionally excluded from version control.
+
 ---
 
 ## 🔬 Core Findings & Methodology Improvements
