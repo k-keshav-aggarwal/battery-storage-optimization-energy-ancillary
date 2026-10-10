@@ -236,7 +236,7 @@ def plot_roc_curves():
     ax.set_ylim(-0.02, 1.02)
     ax.set_xlabel("False Positive Rate (FPR)")
     ax.set_ylabel("True Positive Rate (TPR)")
-    ax.set_title("Test-Window ROC (5-Seed Ensemble)", fontweight="bold", pad=28)
+    # ax.set_title("Test-Window ROC (5-Seed Ensemble)", fontweight="bold", pad=28)
     ax.grid(True, linestyle=":", alpha=0.5)
     ax.legend(loc="lower left", bbox_to_anchor=(0.0, 1.03), ncol=2, frameon=True, fancybox=False,
               edgecolor="#cccccc", facecolor="#fafafa", framealpha=0.9, borderpad=0.25,
