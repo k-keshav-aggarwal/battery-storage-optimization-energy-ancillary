@@ -46,42 +46,44 @@
 \citation{VAE}
 \citation{Audibert_USAD}
 \citation{DDPM}
-\citation{GAT}
 \newlabel{eq:gat}{{5}{3}{Mathematical Modeling}{equation.2.5}{}}
 \newlabel{eq:reward}{{6}{3}{Mathematical Modeling}{equation.2.6}{}}
 \newlabel{eq:qlearning}{{7}{3}{Mathematical Modeling}{equation.2.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Methodology}{3}{section.3}\protected@file@percent }
 \newlabel{sec:methodology}{{III}{3}{Methodology}{section.3}{}}
+\citation{GAT}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces System architecture. The raw CAISO price data undergoes causal feature extraction before Stage 1, which consists of an iForest pre-filter, followed by Stage 2, which consists of deep autoencoders and multi-node models. The five-seed ensemble then guides the battery dispatching policy and the defense filter.}}{4}{figure.1}\protected@file@percent }
 \newlabel{fig:architecture}{{1}{4}{System architecture. The raw CAISO price data undergoes causal feature extraction before Stage 1, which consists of an iForest pre-filter, followed by Stage 2, which consists of deep autoencoders and multi-node models. The five-seed ensemble then guides the battery dispatching policy and the defense filter}{figure.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Results and Experimental Evaluation}{4}{section.4}\protected@file@percent }
-\newlabel{sec:results}{{IV}{4}{Results and Experimental Evaluation}{section.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Test-window ROC curves for the 5-seed ensemble models on CAISO data, GRU-AE (downward triangle), LSTM-AE (diamond), Diffusion (upward triangle), iForest (circle), VAE (square), with the inset showing the operational low-false-positive region (false positive rate $\text  {FPR} \le 0.12$).}}{4}{figure.2}\protected@file@percent }
 \newlabel{fig:roc}{{2}{4}{Test-window ROC curves for the 5-seed ensemble models on CAISO data, GRU-AE (downward triangle), LSTM-AE (diamond), Diffusion (upward triangle), iForest (circle), VAE (square), with the inset showing the operational low-false-positive region (false positive rate $\text {FPR} \le 0.12$)}{figure.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Results and Experimental Evaluation}{4}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{IV}{4}{Results and Experimental Evaluation}{section.4}{}}
 \citation{Xu_BESS_Degradation}
 \citation{Sutton_RL}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Performance Master Summary: Accuracy of Model Reconstruction and Anomaly Identification}}{5}{table.2}\protected@file@percent }
 \newlabel{tab:detector_results}{{II}{5}{Performance Master Summary: Accuracy of Model Reconstruction and Anomaly Identification}{table.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Arbitrage Earnings Across Both Test Windows (LSTM-AE Signal)}}{5}{table.3}\protected@file@percent }
-\newlabel{tab:economics}{{III}{5}{Arbitrage Earnings Across Both Test Windows (LSTM-AE Signal)}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Anomaly detection timeline for a single seed (Seed 1) of the 5-seed ensemble models on CAISO data, highlighting the third week of November. The GRU-AE (downward triangle), LSTM-AE (diamond), Diffusion (upward triangle), iForest (circle), and VAE (square) show their detection results compared with the SP15 market price. The inset shows the operational low-false-positive region (false positive rate $\text  {FPR} \le 0.12$).}}{5}{figure.3}\protected@file@percent }
+\newlabel{fig:timeline}{{3}{5}{Anomaly detection timeline for a single seed (Seed 1) of the 5-seed ensemble models on CAISO data, highlighting the third week of November. The GRU-AE (downward triangle), LSTM-AE (diamond), Diffusion (upward triangle), iForest (circle), and VAE (square) show their detection results compared with the SP15 market price. The inset shows the operational low-false-positive region (false positive rate $\text {FPR} \le 0.12$)}{figure.3}{}}
 \citation{Mnih_DQN}
-\citation{Kurt_FDI_Detection}
-\citation{XGBoost}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Window 1 cumulative trading returns. (a) Heuristic dispatch, directional spread trading, and tabular Q-learning, showing how the anomaly signal nearly quadruples Q-learning profit while cutting seed variance tenfold. (b) Directional arbitrage profit and win rate across the four detector families.}}{6}{figure.3}\protected@file@percent }
-\newlabel{fig:profit}{{3}{6}{Window 1 cumulative trading returns. (a) Heuristic dispatch, directional spread trading, and tabular Q-learning, showing how the anomaly signal nearly quadruples Q-learning profit while cutting seed variance tenfold. (b) Directional arbitrage profit and win rate across the four detector families}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Window 1 cumulative trading returns. (a) Heuristic dispatch, directional spread trading, and tabular Q-learning, showing how the anomaly signal nearly quadruples Q-learning profit while cutting seed variance tenfold. (b) Directional arbitrage profit and win rate across the four detector families.}}{6}{figure.4}\protected@file@percent }
+\newlabel{fig:profit}{{4}{6}{Window 1 cumulative trading returns. (a) Heuristic dispatch, directional spread trading, and tabular Q-learning, showing how the anomaly signal nearly quadruples Q-learning profit while cutting seed variance tenfold. (b) Directional arbitrage profit and win rate across the four detector families}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Arbitrage Earnings Across Both Test Windows (LSTM-AE Signal)}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:economics}{{III}{6}{Arbitrage Earnings Across Both Test Windows (LSTM-AE Signal)}{table.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Per-Detector Arbitrage Performance (Window 1)}}{6}{table.4}\protected@file@percent }
 \newlabel{tab:perdetector}{{IV}{6}{Per-Detector Arbitrage Performance (Window 1)}{table.4}{}}
-\citation{Xu_BESS_Degradation}
+\citation{Kurt_FDI_Detection}
+\citation{XGBoost}
 \@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Adversarial Detection and Economic Recovery (5 Seeds)}}{7}{table.5}\protected@file@percent }
 \newlabel{tab:adv_detect}{{V}{7}{Adversarial Detection and Economic Recovery (5 Seeds)}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Break-Even Precision Analysis ($p^*$)}{7}{subsection.4.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Break-Even Precision: Machine-Learning Classifier vs.\ Simple Threshold}}{7}{table.6}\protected@file@percent }
 \newlabel{tab:breakeven}{{VI}{7}{Break-Even Precision: Machine-Learning Classifier vs.\ Simple Threshold}{table.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Break-Even Precision Analysis ($p^*$)}{7}{subsection.4.1}\protected@file@percent }
-\newlabel{eq:breakeven}{{8}{7}{Break-Even Precision Analysis \texorpdfstring {($p^*$)}{(p*)}}{equation.4.8}{}}
+\newlabel{eq:breakeven}{{8}{7}{Break-Even Precision Analysis ($p^*$)}{equation.4.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion \& Future Directions}{7}{section.5}\protected@file@percent }
 \newlabel{sec:discussion}{{V}{7}{Conclusion \& Future Directions}{section.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Break-even precision trade-off. (a) Net cash flow versus precision $p$ for the learned classifier ($p^*=0.334$, operating at $p=0.891$) against the simple threshold rule ($p^*=1.017$). (b) The asymmetry in false-alarm penalties: a threshold false alarm costs $18.3\times $ as much as a true positive saves.}}{8}{figure.4}\protected@file@percent }
-\newlabel{fig:breakeven}{{4}{8}{Break-even precision trade-off. (a) Net cash flow versus precision $p$ for the learned classifier ($p^*=0.334$, operating at $p=0.891$) against the simple threshold rule ($p^*=1.017$). (b) The asymmetry in false-alarm penalties: a threshold false alarm costs $18.3\times $ as much as a true positive saves}{figure.4}{}}
+\citation{Xu_BESS_Degradation}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Break-even precision trade-off. (a) Net cash flow versus precision $p$ for the learned classifier ($p^*=0.611$, operating at $p=0.765$) against the simple threshold rule ($p^*=0.928$). (b) The asymmetry in false-alarm penalties: a threshold false alarm costs $3.7\times $ as much as the classifier ($-\$240.35$ vs.\ $-\$64.28$).}}{8}{figure.5}\protected@file@percent }
+\newlabel{fig:breakeven}{{5}{8}{Break-even precision trade-off. (a) Net cash flow versus precision $p$ for the learned classifier ($p^*=0.611$, operating at $p=0.765$) against the simple threshold rule ($p^*=0.928$). (b) The asymmetry in false-alarm penalties: a threshold false alarm costs $3.7\times $ as much as the classifier ($-\$240.35$ vs.\ $-\$64.28$)}{figure.5}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Cross-Attack Transfer Performance Across Source and Target Threat Types (5-Seed Average)}}{8}{table.7}\protected@file@percent }
 \newlabel{tab:transfer}{{VII}{8}{Cross-Attack Transfer Performance Across Source and Target Threat Types (5-Seed Average)}{table.7}{}}
 \citation{CAISO}
@@ -96,6 +98,9 @@
 \bibcite{CAISO}{7}
 \bibcite{Lago_EPF_Benchmark}{8}
 \bibcite{Audibert_USAD}{9}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Cross-attack transfer evaluation. (a) The detection AUROC Matrix shows that all values remain high ($\geq 0.856$). (b) Economic Recovery Matrix reveals serious cross-attack vulnerabilities; for example, a value of $-58.3\%$ between Naive and Adaptive attacks, and $-12.4\%$ between Sinusoidal and Adaptive attacks.}}{9}{figure.6}\protected@file@percent }
+\newlabel{fig:transfer}{{6}{9}{Cross-attack transfer evaluation. (a) The detection AUROC Matrix shows that all values remain high ($\geq 0.856$). (b) Economic Recovery Matrix reveals serious cross-attack vulnerabilities; for example, a value of $-58.3\%$ between Naive and Adaptive attacks, and $-12.4\%$ between Sinusoidal and Adaptive attacks}{figure.6}{}}
+\@writefile{toc}{\contentsline {section}{References}{9}{section*.2}\protected@file@percent }
 \bibcite{VAE}{10}
 \bibcite{DDPM}{11}
 \bibcite{RL_Dispatch}{12}
@@ -107,7 +112,4 @@
 \bibcite{GAT}{18}
 \bibcite{Mnih_DQN}{19}
 \bibcite{XGBoost}{20}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Cross-attack transfer evaluation. (a) The detection AUROC Matrix shows that all values are very high ($\geq 0.75$). (b) Economic Recovery Matrix reveals serious cross-attack vulnerabilities; for example, a value of $-40.9\%$ between Sinusoidal and Adaptive attacks.}}{9}{figure.5}\protected@file@percent }
-\newlabel{fig:transfer}{{5}{9}{Cross-attack transfer evaluation. (a) The detection AUROC Matrix shows that all values are very high ($\geq 0.75$). (b) Economic Recovery Matrix reveals serious cross-attack vulnerabilities; for example, a value of $-40.9\%$ between Sinusoidal and Adaptive attacks}{figure.5}{}}
-\@writefile{toc}{\contentsline {section}{References}{9}{section*.2}\protected@file@percent }
-\gdef \@abspage@last{9}
+\gdef \@abspage@last{10}
