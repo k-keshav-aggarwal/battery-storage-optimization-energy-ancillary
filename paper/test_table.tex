@@ -1,0 +1,31 @@
+\documentclass[journal]{IEEEtran}
+\usepackage{booktabs,tabularx,amsmath}
+\begin{document}
+\begin{table}[!t]
+\centering
+\caption{Cross-Attack Transfer Performance (5 Seeds)}
+\label{tab:transfer}
+\footnotesize
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}llcccc@{}}
+\toprule
+\textbf{Source Train} & \textbf{Target Test} & \textbf{AUROC} & \textbf{Prec.} & \textbf{Rec.} & \textbf{Recov.\,\%} \\
+\midrule
+ Naive & Naive & 0.951 & 0.943 & 0.698 & 34.6 \\
+ Naive & Adaptive & 0.915 & 0.942 & 0.411 & $-58.3$ \\
+ Naive & Sinusoidal & 0.888 & 0.907 & 0.220 & 4.0 \\
+ Adaptive & Naive & 0.960 & 0.933 & 0.688 & 19.3 \\
+ Adaptive & Adaptive & 0.965 & 0.974 & 0.702 & $-24.0$ \\
+ Adaptive & Sinusoidal & 0.907 & 0.947 & 0.289 & $-10.5$ \\
+ Sinusoidal & Naive & 0.876 & 0.584 & 0.415 & 24.3 \\
+ Sinusoidal & Adaptive & 0.856 & 0.724 & 0.277 & $-12.4$ \\
+ Sinusoidal & Sinusoidal & 0.971 & 0.905 & 0.805 & 71.6 \\
+\midrule
+ \shortstack[l]{Adaptive +\\Sinusoidal} & Naive & 0.958 & 0.765 & 0.732 & 49.0 \\
+ \shortstack[l]{Naive +\\Sinusoidal} & Adaptive & 0.953 & 0.960 & 0.465 & $-17.4$ \\
+ \shortstack[l]{Naive +\\Adaptive} & Sinusoidal & 0.922 & 0.974 & 0.181 & $-6.1$ \\
+\bottomrule
+\end{tabular*}
+\end{table}
+\end{document}
