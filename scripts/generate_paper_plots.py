@@ -104,9 +104,9 @@ def plot_architecture():
     draw_card(29.4, 3.75, 11.6, 6.5, "ADVERSARIAL DEFENSE (COMPANION)", "#fff7ed", "#fed7aa")
 
     # Module 1: Data
-    draw_box(4.4, 12.0, 7.0, 2.0, "3-Year CAISO Data\nSP15, NP15, ZP26 + 4 AS\n(25,944 contig. hours)",
+    draw_box(4.4, 12.0, 7.0, 2.0, "4-Year CAISO Data\nSP15, NP15, ZP26 + 4 AS\n(32,832 contig. hours)",
              bg_color="#ffffff", edge_color="#0284c7", fontsize=6.2, weight="bold")
-    draw_box(4.4, 8.2, 7.0, 2.0, "Chronological Split\nTrain: 23.7m | Val: 5.9m\nTest 1: 6.0m | Test 2 (W2)",
+    draw_box(4.4, 8.2, 7.0, 2.0, "Chronological Split\nTrain: 23.7m | Val: 5.9m\nTest 1: 6.0m | Test 2 (15.3m)",
              bg_color="#ffffff", edge_color="#64748b", fontsize=6.0)
     draw_box(4.4, 4.4, 7.0, 2.0, r"Causal Trailing Features" "\n" r"Persistence, RoC, Vol., z" "\n" r"(Strictly $h \leq t$ to avoid leak)",
              bg_color="#ffffff", edge_color="#64748b", fontsize=6.0)
@@ -440,38 +440,38 @@ def plot_breakeven_tradeoff():
     # Precision range
     p = np.linspace(0, 1.0, 500)
 
-    # Parameters from Table V in main.tex & artifacts_v2/breakeven.json
+    # Parameters from artifacts_v2/breakeven.json and Table VI
     # Learned Classifier:
-    saved_tp_clf = 24.09
-    lost_fp_clf = -19.11
-    p_star_clf = 0.334
-    p_opr_clf = 0.891
-    val_opr_clf = p_opr_clf * saved_tp_clf + (1 - p_opr_clf) * lost_fp_clf  # +$19.38
+    saved_tp_clf = 23.93
+    lost_fp_clf = -64.28
+    p_star_clf = 0.611
+    p_opr_clf = 0.765
+    val_opr_clf = p_opr_clf * saved_tp_clf + (1 - p_opr_clf) * lost_fp_clf  # +$3.20/h
 
     # Trailing Robust-z:
-    saved_tp_rz = -4.89
-    lost_fp_rz = -350.45
-    p_star_rz = 1.017
-    p_opr_rz = 0.802
-    val_opr_rz = p_opr_rz * saved_tp_rz + (1 - p_opr_rz) * lost_fp_rz  # -$73.31
+    saved_tp_rz = 12.41
+    lost_fp_rz = -240.35
+    p_star_rz = 0.928
+    p_opr_rz = 0.757
+    val_opr_rz = p_opr_rz * saved_tp_rz + (1 - p_opr_rz) * lost_fp_rz  # -$49.01/h
 
     val_clf = p * saved_tp_clf + (1 - p) * lost_fp_clf
     val_rz = p * saved_tp_rz + (1 - p) * lost_fp_rz
 
     # Shaded Zones
-    ax1.axhspan(0, 30, color="#dcfce7", alpha=0.45, label="Profitable Defense Zone")
-    ax1.axhspan(-120, 0, color="#fee2e2", alpha=0.35, label="Net Economic Loss Zone")
+    ax1.axhspan(0, 35, color="#dcfce7", alpha=0.45, label="Profitable Defense Zone")
+    ax1.axhspan(-255, 0, color="#fee2e2", alpha=0.35, label="Net Economic Loss Zone")
     ax1.axhline(0, color="#475569", linestyle="--", lw=0.9, zorder=2)
 
     # Plot Lines
-    ax1.plot(p, val_clf, color="#16a34a", lw=2.0, label="Learned XGBoost Classifier ($p^* = 0.334$)")
-    ax1.plot(p, val_rz, color="#dc2626", lw=1.8, linestyle="-.", label="Trailing Robust-$z$ Rule ($p^* = 1.017$)")
+    ax1.plot(p, val_clf, color="#16a34a", lw=2.0, label="Learned XGBoost Classifier ($p^* = 0.611$)")
+    ax1.plot(p, val_rz, color="#dc2626", lw=1.8, linestyle="-.", label="Trailing Robust-$z$ Rule ($p^* = 0.928$)")
 
     # Operating Points
     ax1.scatter([p_opr_clf], [val_opr_clf], color="#16a34a", edgecolors="#0f172a", s=60,
                 marker="o", zorder=5)
     ax1.annotate(f"Operational Point\np = {p_opr_clf:.3f}, Net: +${val_opr_clf:.2f}/h",
-                 xy=(p_opr_clf, val_opr_clf), xytext=(0.76, 5), ha="center",
+                 xy=(p_opr_clf, val_opr_clf), xytext=(0.60, 16), ha="center",
                  arrowprops=dict(arrowstyle="->", color="#15803d", lw=0.9),
                  fontsize=6.5, weight="bold", color="#15803d",
                  bbox=dict(boxstyle="round,pad=0.22", facecolor="#ffffff", edgecolor="#86efac", lw=0.6))
@@ -479,21 +479,21 @@ def plot_breakeven_tradeoff():
     ax1.scatter([p_opr_rz], [val_opr_rz], color="#dc2626", edgecolors="#0f172a", s=60,
                 marker="s", zorder=5)
     ax1.annotate(f"Threshold Point\np = {p_opr_rz:.3f}, Net: -${abs(val_opr_rz):.2f}/h",
-                 xy=(p_opr_rz, val_opr_rz), xytext=(0.40, -92),
+                 xy=(p_opr_rz, val_opr_rz), xytext=(0.42, -95),
                  arrowprops=dict(arrowstyle="->", color="#b91c1c", lw=0.9),
                  fontsize=6.5, weight="bold", color="#b91c1c",
                  bbox=dict(boxstyle="round,pad=0.22", facecolor="#ffffff", edgecolor="#fca5a5", lw=0.6))
 
     # Vertical break-even marker for learned classifier
     ax1.axvline(p_star_clf, color="#16a34a", linestyle=":", lw=1.0)
-    ax1.text(p_star_clf + 0.02, -22, f"Break-Even\np* = {p_star_clf:.3f}", fontsize=6.6,
+    ax1.text(p_star_clf + 0.02, -26, f"Break-Even\np* = {p_star_clf:.3f}", fontsize=6.6,
              color="#15803d", weight="bold")
 
     ax1.set_xlabel("Operational Defense Precision $p$")
     ax1.set_ylabel("Expected Net Value per Flagged Hour ($/h)")
     ax1.set_title("(a) Marginal Break-Even Economics by Precision", fontweight="bold", pad=4)
     ax1.set_xlim(0, 1.0)
-    ax1.set_ylim(-130, 55)
+    ax1.set_ylim(-260, 45)
     ax1.grid(True, linestyle=":", alpha=0.5)
     ax1.legend(loc="lower right", bbox_to_anchor=(0.98, 0.05), frameon=True, facecolor="#fafafa", edgecolor="#cccccc", fontsize=6.8)
 
@@ -518,18 +518,18 @@ def plot_breakeven_tradeoff():
     ax2.legend(loc="upper left", bbox_to_anchor=(0.04, 0.96), frameon=True, facecolor="#fafafa", edgecolor="#cccccc", fontsize=7.0)
 
     # Add text labels on bars
-    ax2.text(rects_c[0].get_x() + rects_c[0].get_width()/2., clf_costs[0] + 8,
+    ax2.text(rects_c[0].get_x() + rects_c[0].get_width()/2., clf_costs[0] + 6,
              f"+${clf_costs[0]:.2f}", ha="center", va="bottom", fontsize=6.8, weight="bold")
-    ax2.text(rects_c[1].get_x() + rects_c[1].get_width()/2., clf_costs[1] + 8,
+    ax2.text(rects_c[1].get_x() + rects_c[1].get_width()/2., clf_costs[1] + 6,
              f"-${clf_costs[1]:.2f}", ha="center", va="bottom", fontsize=6.8, weight="bold")
 
-    ax2.text(rects_r[0].get_x() + rects_r[0].get_width()/2., rz_costs[0] + 8,
-             f"${rz_costs[0]:.2f}", ha="center", va="bottom", fontsize=6.8)
-    ax2.text(rects_r[1].get_x() + rects_r[1].get_width()/2., rz_costs[1] + 8,
-             f"-${rz_costs[1]:.2f}\n(18.3x penalty!)", ha="center", va="bottom",
+    ax2.text(rects_r[0].get_x() + rects_r[0].get_width()/2., rz_costs[0] + 6,
+             f"+${rz_costs[0]:.2f}", ha="center", va="bottom", fontsize=6.8)
+    ax2.text(rects_r[1].get_x() + rects_r[1].get_width()/2., rz_costs[1] + 6,
+             f"-${rz_costs[1]:.2f}\n(3.7x penalty!)", ha="center", va="bottom",
              fontsize=6.8, weight="bold", color="#7f1d1d")
 
-    ax2.set_ylim(-25, 480)
+    ax2.set_ylim(-15, 320)
 
     fig.tight_layout(pad=0.1)
     save_dual(fig, "breakeven_tradeoff.png")
