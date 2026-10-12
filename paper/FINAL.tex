@@ -9,6 +9,7 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{microtype}
+\usepackage{lmodern}
 \usepackage{balance}
 \usepackage{xurl}
 \usepackage[hidelinks]{hyperref}
@@ -56,7 +57,7 @@ Battery energy storage systems (BESS) in peer-to-peer (P2P) electricity markets 
 Conventional anomaly detection filters used for markets tend to regard valid price hikes as errors or attacks and limit battery discharge, losing out on large arbitrage gains within an hour.
 This paper proposes a framework that combines unsupervised deep recurrent autoencoders with reinforcement-learning-based dispatch and can be directly deployed in existing battery controllers. 
 First, a gated recurrent unit (GRU) autoencoder evaluates 24-hour rolling market prices to spot scarcity peaks, followed by a tabular Q-learning controller that schedules battery storage and releases energy when prices reach their peak.
-Unlike conventional benchmarks that assume future price clairvoyance, the proposed causal framework enforces strict real-time execution. Evaluated on four years of authentic California Independent System Operator (CAISO) Day-Ahead settlements across three regional hubs (SP15, NP15, ZP26), the GRU detector achieves an Area Under the Receiver Operating Characteristic Curve (AUROC) of 0.882.
+Unlike conventional benchmarks that assume clairvoyance about future prices, the proposed causal framework enforces strict real-time execution. Evaluated on four years of authentic California Independent System Operator (CAISO) Day-Ahead settlements across three regional hubs (SP15, NP15, ZP26), the GRU detector achieves an Area Under the Receiver Operating Characteristic Curve (AUROC) of 0.882.
 Conditioning tabular Q-learning on this anomaly alert quadruples energy trading profits while reducing cross-seed policy variance by 90\%, and the defense filter recovers up to 71.6\% of adversarial attack damage while comfortably exceeding the break-even threshold (76.5\% vs.\ 61.1\%).
 These results demonstrate that wholesale price excursions represent high-value dispatch opportunities rather than telemetry corruptions, maximizing storage profitability within existing market-clearing rules.\end{abstract}
 
@@ -75,7 +76,7 @@ Most days, these curves follow a common pattern dictated by the work schedule an
 
 Past state-of-the-art (SOTA) approaches to anomaly detection in pricing have addressed the problem primarily from a cybersecurity perspective~\cite{Vulnerability_Analysis, AE_Anomaly, Xie_FDI}. Such an approach starts by using historical data without anomalies, creates some artificial price spikes, and checks whether the added anomalies are detected. Such an approach may be useful in defending against a cyber-attack~\cite{Kurt_FDI_Detection}. However, it cannot prove the actual trading process, the origins of prices, or the legal procedures governing market settlements. If a legitimate \$1,000/MWh spike anomaly is detected and battery discharge is disabled, the operator will incur significant income loss.
 
-Thus, to explain the reason for our experimental evaluations, we use only actual market prices, obtaining settlement information from the California Independent System Operator (CAISO) Open Access Same-Time Information System (OASIS) website~\cite{CAISO} without any synthetic additions. We also investigate common questions, such as: Does the attacker actually inject fake spikes into this data flow, and how can storage assets defend against such tampering?
+Thus, to explain the rationale for our experimental evaluations, we use only actual market prices and obtain settlement information from the California Independent System Operator (CAISO) Open Access Same-Time Information System (OASIS) website~\cite{CAISO}, without any synthetic additions. We also investigate common questions, such as: Does the attacker actually inject fake spikes into this data flow, and how can storage assets defend against such tampering?
 
 Using historical market data has two crucial issues. The first is that the historical prices provided by market operators cannot be taken as ground-truth labels; therefore, the model needs to be validated for statistical consistency and, ultimately, profitability. The second and even more important issue is that mistakes are not symmetrical in any sense. While a mistake in image or text recognition is just an annoyance, a mistake that prevents the battery from discharging into a real \$1,000/MWh spike can lead to a loss.
 
@@ -90,9 +91,9 @@ Battery Dispatch and Trading: Storage scheduling, commonly used methods include 
 
 The reasons behind these two problems, lack of labeled data and imbalanced misclassification costs, inspire the design choices made in this paper. The paper has contributions in the following aspects:
 \begin{itemize}
-\item \textbf{Causal Detector Benchmarking:} We benchmarked seven unsupervised anomaly detectors on CAISO market data and found that recurrent autoencoders outperform generative and graph models. Across 28,271 market hours and five seeds, a causal GRU-AE achieved 0.882 AUROC, whereas VAE priors smoothed away spikes (0.534 AUROC). Unlike prior studies using synthetic anomalies or non-causal windows, our evaluation tests unmanipulated settlement data strictly in real time. This proves that sequential memory, rather than spatial or latent complexity, is the decisive driver for power price spike detection.
-\item \textbf{Anomaly-Conditioned Dispatch:} We demonstrated that conditioning battery dispatch on price anomaly alerts quadruples trading profits while stabilizing policy convergence. Feeding autoencoder alerts into tabular Q-learning increased out-of-sample arbitrage gains from \$3,090 to \$11,957 and slashed seed variance by 90\%. Unlike conventional controllers that discard anomalies as noise or assume price clairvoyance, our policy actively exploits scarcity peaks under strict physical SoC limits. This shows that lightweight tabular reinforcement learning can capture volatile market revenue without complex deep neural networks.
-\item \textbf{Break-Even Precision Analysis ($p^*$):} We formulated an economic break-even precision metric ($p^*$) to assess cyber-defense feasibility under asymmetric trading penalties. Our learned classifier operates at 76.5\% precision—comfortably exceeding break-even ($p^* = 0.611$) and recovering up to 71.6\% of attack losses—whereas static rules fail at $p^* = 0.928$. Unlike standard cybersecurity metrics assuming symmetric error costs, $p^*$ accounts for false alarms costing $3.7\times$ more than undetected attacks. This provides operators with a direct financial threshold to deploy anomaly defenses without sacrificing commercial arbitrage profits.
+\item Our empirical results on the CAISO dataset showed that recurrent autoencoders consistently outperform generative and graph-based approaches on seven anomaly detection algorithms. In terms of five seeds and 28,271 market hours, we reached 0.882 AUROC with a causal GRU-AE algorithm, but the VAE priors flattened price spikes and obtained 0.534 AUROC. Contrary to earlier research, which uses synthesized anomalies or non-causal time windows, we assess real price spikes on the settlement dataset without any manipulation, only in real-time. Therefore, it proves that sequential memory is a crucial factor for detecting price spikes.
+\item Our results show that training battery dispatch based on alerts of pricing anomalies increases profits fourfold and supports policy convergence stability. The addition of autoencoder alerts in our Q-table learning setting improved the arbitrage profits in an out-of-sample scenario from \$3,090 to \$11,957, with an average reduction in seed variance of around 90\%. Unlike conventional algorithms that either regard anomalies as noise or believe in price clairvoyance, the proposed approach uses anomaly detection to take advantage of scarcity during peaks and operates within physical state-of-charge limitations. Our results thus show how simple reinforcement learning can model erratic revenues without using deep neural models.
+\item A new economic metric of break-even precision (p*) is defined to measure the viability of cyberdefense when there is asymmetric punishment on trades. The learned classification algorithm attains a level of precision of 76.5\%, surpassing the economic break-even threshold (p* = 0.611), allowing for the recovery of up to 71.6\% of damages done by the attack. On the other hand, fixed heuristic rules do not work at the level of p* = 0.928. Whereas existing security metrics operate on the assumption of symmetric cost of errors, p* includes false positives whose cost is 3.7 times higher than the costs of false negatives.
 \end{itemize}
 
 \section{Mathematical Modeling}
@@ -156,9 +157,9 @@ In the case of GNN-AE, the transmission topology graph $\mathcal{G} = (\mathcal{
 \alpha_{ij} = \frac{\exp\left(\text{LeakyReLU}\left(\mathbf{a}^T [\mathbf{W} h_i \parallel \mathbf{W} h_j]\right)\right)}{\sum_{k \in \mathcal{N}_i} \exp\left(\text{LeakyReLU}\left(\mathbf{a}^T [\mathbf{W} h_i \parallel \mathbf{W} h_k]\right)\right)},
 \label{eq:gat}
 \end{equation}
-where $\mathbf{W} \in \mathbb{R}^{8 \times d}$ is a shared projection matrix ($d=24$), $\mathbf{a} \in \mathbb{R}^{16}$ is the attention vector, $\parallel$ denotes concatenation, and $\mathcal{N}_i$ represents adjacent regional hubs. Spatial node representations feed into an LSTM temporal sequence encoder.
+where $\mathbf{W} \in \mathbb{R}^{8 \times d}$ is a common projection matrix with $d=24$, $\mathbf{a} \in \mathbb{R}^{16}$ is the attention vector, $\parallel$ denotes concatenation, and $\mathcal{N}_i$ consists of adjacent regional hubs. The spatial node features are fed to LSTM-based temporal encoder.
 
-The Tabular Q-Learning~\cite{Sutton_RL} uses as its finite state space $s = (p_z, a_{\text{flag}}, s_{\text{soc}})$. Prices are normalized and discretized in 10 buckets with boundaries ranging between $-3\sigma -  +3\sigma$ (price level buckets are $p_z \in \{1, \dots, 10\}$); the anomaly flag value $a_{\text{flag}}$ belongs to 5 quantiles of severity ($a_{\text{flag}} \in \{1, \dots, 5\}$; or $1$ class in unconditional baseline) while the SoC value bucket range is also $s_{\text{soc}} \in \{1, \dots, 5\}$. It gives $|S|=250$ discrete states ($|S|=50$ in conditional absence of anomaly).
+The Tabular Q-Learning~\cite{Sutton_RL} uses as its finite state space $s = (p_z, a_{\text{flag}}, s_{\text{soc}})$. Prices are normalized and discretized in 10 buckets with boundaries ranging between $-3\sigma - +3\sigma$ (price level buckets are $p_z \in \{1, \dots, 10\}$); the anomaly flag value $a_{\text{flag}}$ belongs to 5 quantiles of severity ($a_{\text{flag}} \in \{1, \dots, 5\}$; or $1$ class in unconditional baseline) while the SoC value bucket range is also $s_{\text{soc}} \in \{1, \dots, 5\}$. It gives $|S|=250$ discrete states ($|S|=50$ in conditional absence of anomaly).
 
 The action space comprises of three discrete values for power commands $a \in \{-1.0, 0.0, 1.0\}$, indicating full battery discharge ($P_t^{\text{dis}}=P_{\max}$), resting ($P_t=0$), and full battery charging ($P_t^{\text{ch}}=P_{\max}$), satisfying \eqref{eq:soc_dynamics}-\eqref{eq:soc_limits}. The exclusive nature of actions is implied by the discrete set of actions. The net return for rewards for money received $r_t$ includes:
 \begin{align}
@@ -176,9 +177,9 @@ with learning rate $\alpha=0.15$ and discount factor $\gamma=0.95$.
 \section{Methodology}
 \label{sec:methodology}
 
-Approximately 4 years of hourly day-ahead LMPs from CAISO are investigated, including data from 12th January, 2023, to 11th October, 2026. The price information was collected at the three main prosumer aggregation points, namely, SP15, NP15, and ZP26, and four ancillary services, Regulation Up, Regulation Down, Spinning Reserves, and Non-Spinning Reserves, amounting to 28,271 price observations in a 24-hour period (32,832 for continuous grid time-indexed hours). The latter are used as background information for multi-channel anomalies, representing the reserve margin tightness of the system operation. At the same time, only energy arbitrage calculations are evaluated in economic trading terms.
+Approximately 4 years of hourly day-ahead LMPs from CAISO are investigated, including data from 12th January, 2023, to 11th October, 2026. The price information was collected at the three main prosumer aggregation points, namely, SP15, NP15, and ZP26, and four ancillary services, Regulation Up, Regulation Down, Spinning Reserves, and Non-Spinning Reserves, amounting to 28,271 price observations in 24 hours (32,832 for continuous grid time-indexed hours). The latter are used as background information for multi-channel anomalies, representing the reserve margin tightness of the system operation. At the same time, only energy arbitrage calculations are evaluated in economic trading terms.
 
-In addition to that, price anomalies have been observed during the above-mentioned period where SP15 recorded its highest at $\$1,143.78/ \text{MWh}$ on 17th August, 2023, owing to heat waves in the region, whereas its lowest was on 19th May, 2024, where SP15 recorded a price of $-\$41.33/ \text{MWh}.$
+In addition to that, price anomalies have been observed during the above-mentioned period where SP15 recorded its highest at $\$1,143.78/ \text{MWh}$ on 17th August, 2023, owing to heat waves in the region. In contrast, its lowest was on 19th May, 2024, where SP15 recorded a price of $-\$41.33/ \text{MWh}.$
 
 To give a more pragmatic estimate on the efficiency of our method, we divide time into non-overlapping intervals as follows: training interval from 12th January, 2023 to 31st December, 2024 (17,280 consecutive hours, about 23.7 months), validation interval from 1st January to 30th June, 2025 (4,344 hours, 5.9 months: solely for the calibration of the thresholds), and testing interval from 1st July, 2025 to 11th October, 2026 (11,208 hours, 15.3 months: tested once). Moreover, the six-month out-of-season seasonality test period is from 1st January to 30th June in 2025. In the case of California electric markets, the clearing of the Day-Ahead Market (DAM) takes place for all 24 hours of the next day of operation at 13:00 $D-1$. Nevertheless, BESS commercial traders and transactive prosumers must place their bids for energy deliveries without knowing the settled prices before 10:00 AM. They must roll their exposures to real-time imbalances on a 15-minute and 5-minute basis. We test our models using only causal 24-hour rolling windows in order to eliminate the problem of foreseeing.
 
@@ -214,11 +215,11 @@ All experiments were executed across five random seeds (0--4) with fixed CPU thr
  VAE & $\mathbf{7.85\pm0.47}$ & $\mathbf{6.21\pm0.39}$ & $0.534\pm0.164$ & 0.576 & 0.007 & 0.673 & $0.027\pm0.021$ & 0.015 & 0.226 \\
  Diffusion (DDPM) & n/a$^\dagger$ & n/a$^\dagger$ & $0.564\pm0.071$ & 0.631 & 0.009 & 0.744 & $0.016\pm0.015$ & 0.009 & 0.096 \\
  LSTM-AE & $10.37\pm1.76$ & $8.44\pm1.45$ & $0.738\pm0.145$ & 0.859 & $\mathbf{0.184}$ & $\mathbf{0.921}$ & $0.107\pm0.099$ & 0.073 & 0.261 \\
- \textbf{GRU-AE} & $9.70\pm0.68$ & $7.77\pm0.68$ & $\mathbf{0.776\pm0.237}$ & $\mathbf{0.882}$ & 0.162 & 0.894 & $0.157\pm0.152$ & 0.110 & $\mathbf{0.304}$ \\
+\textbf{GRU-AE} & $9.70\pm0.68$ & $7.77\pm0.68$ & $\mathbf{0.776\pm0.237}$ & $\mathbf{0.882}$ & 0.162 & 0.894 & $0.157\pm0.152$ & 0.110 & $\mathbf{0.304}$ \\
 \midrule
 \multicolumn{10}{l}{\emph{Multi-Node Spatial Models (Simultaneously Processing All 3 Regional Hubs: NP15, SP15, ZP26)}} \\
  MV-LSTM Control & $9.12\pm0.84$ & $7.15\pm0.72$ & $0.854\pm0.165$ & 0.926 & 0.201 & n/a & $0.185\pm0.092$ & 0.142 & 0.326 \\
- \textbf{GNN-AE} & $\mathbf{8.86\pm0.65}$ & $\mathbf{6.94\pm0.58}$ & $\mathbf{0.938\pm0.098}$ & $\mathbf{0.985}$ & $\mathbf{0.246}$ & n/a & $\mathbf{0.246\pm0.081}$ & $\mathbf{0.212}$ & $\mathbf{0.391}$ \\
+\textbf{GNN-AE} & $\mathbf{8.86\pm0.65}$ & $\mathbf{6.94\pm0.58}$ & $\mathbf{0.938\pm0.098}$ & $\mathbf{0.985}$ & $\mathbf{0.246}$ & n/a & $\mathbf{0.246\pm0.081}$ & $\mathbf{0.212}$ & $\mathbf{0.391}$ \\
 \bottomrule
 \end{tabular*}
 \vspace{2pt}
@@ -310,7 +311,7 @@ Nevertheless, a compute-matched Deep Q-Network (DQN)~\cite{Mnih_DQN} gained \$5,
  iForest & \textbf{13,128} & 103 & 20, 65\% \\
  VAE & 13,017 & 48 & 39, 59\% \\
  Diffusion & 12,740 & 61 & 52, 58\% \\
- \textbf{LSTM-AE} & 13,089 & \textbf{487} & \textbf{68, 76.5\%} \\
+\textbf{LSTM-AE} & 13,089 & \textbf{487} & \textbf{68, 76.5\%} \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -379,7 +380,7 @@ p^*_i = \frac{|v_{\text{FP}, i}|}{|v_{\text{FP}, i}| + v_{\text{TP}, i}}, \quad 
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=0.96\textwidth]{transfer_heatmap.png}
-\caption{Cross-attack transfer evaluation. (a) Detection AUROC matrix shows consistent strong discrimination performance ($\geq 0.856$). (b) Economic recovery matrix highlights susceptibility to transfer attack (such as $-58.3\%$ for naive and adaptive cases).}
+\caption{Cross-attack transfer evaluation. (a) The detection AUROC matrix exhibits very good discriminatory power ($\geq 0.856$). (b) The economic recovery matrix highlights susceptibility to transfer attacks (e.g., $-58.3\%$ for naive and adaptive cases).}
 \label{fig:transfer}
 \end{figure*}
 
@@ -424,11 +425,11 @@ This paper investigated the challenge of detecting rare, high-value wholesale el
 
 In order to tackle the unbalanced problem of penalties due to false alarms without making the assumption of unrealistic price foresight in the future, an end-to-end causal framework that combines an unsupervised deep recurrent autoencoder model with tabular Q-Learning-based dispatch control was implemented. This framework uses dynamic signals derived from reconstruction errors to control storage systems' actions.
 
-Evaluated across four years of empirical CAISO Day-Ahead settlements, the GRU-AE achieved an AUROC of 0.882 by capturing recurring diurnal temporal dynamics.
-Conditioning tabular Q-learning on this anomaly indicator quadrupled net arbitrage revenues while mitigating cross-seed policy variance by 90\%.
-Furthermore, the adversarial defense filter operated comfortably above the theoretical break-even precision threshold (76.5\% vs.\ $p^* = 0.611$), effectively safeguarding prosumer revenues against data tampering.
+v
+In conditioning tabular Q-learning on this anomaly detection algorithm, not only were net arbitrage profits increased fourfold, but the variance in policy between seeds was reduced by 90\%.
+Secondly, the adversarial protection filter comfortably beat the theoretical break-even precision limit (76.5\% vs.\ $p^*$ = 0.611).
 
-The primary scientific insight of this work is that wholesale market price spikes should be exploited as high-value dispatch signals rather than dismissed as telemetry corruption, demonstrating that risk-aware anomaly conditioning resolves the fundamental trade-off between cyber defense and market profitability.
+The key scientific discovery of this work is that market price surges on the wholesale level must be taken into account as valuable signaling for dispatch, contrary to common belief about telemetry falsification, and it proves that risk-sensitive anomalous filtering addresses a dilemma between cybersecurity and profitability.
 
 The framework can be readily implemented using the current battery management system and the transactive prosumer framework, without any regulatory reforms or changes to the current wholesale power market-clearing rules.
 Future extensions to the model include evaluating it on a sub-hourly basis and integrating non-linear rainflow cycle counting and cell-level thermal dynamics to optimize long-term asset life.
